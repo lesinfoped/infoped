@@ -474,8 +474,7 @@ async function deployToGitHub() {
 
         // Étape 2 — décoder et remplacer PED_USERS
         addLog('loading', '🔧', 'Mise à jour du bloc utilisateurs…');
-        const currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/
-/g, ''))));
+        const currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
         const newContent     = currentContent.replace(
             /const\s+PED_USERS\s*=\s*\[[\s\S]*?\];/m,
             buildUsersBlock()
