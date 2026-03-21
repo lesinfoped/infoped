@@ -171,3 +171,20 @@ const PED_AGENDA = [
 
 const PED_LAST_UPDATE = "21/03/2026";
 
+/**
+ * ──────────────────────────────────────────────
+ *  CONFIGURATION GITHUB (pour la page admin)
+ * ──────────────────────────────────────────────
+ *  Remplissez ces 3 champs une seule fois.
+ *  Le token permet à la page admin de mettre à
+ *  jour ce fichier automatiquement sur GitHub.
+ *
+ *  Créer un token : github.com/settings/tokens/new
+ *  → cocher "repo" → Generate token → copier ici
+ */
+
+const PED_GITHUB = {
+    token: "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",   // ← à remplacer
+    owner: "lesinfoped",             // ← votre username GitHub
+    repo:  "infoped"                 // ← nom du dépôt
+};

@@ -225,21 +225,15 @@
             </div>
         </div>
 
-        <!-- Config GitHub — owner/repo uniquement, token dans les secrets GitHub -->
+        <!-- Config GitHub — lue depuis data.js (PED_GITHUB) -->
         <div class="card">
             <div class="card-title">🔑 Connexion GitHub</div>
             <div class="config-status config-warn" id="configStatus">⚠️ Vérification…</div>
-            <div class="config-fields open" id="configFields" style="margin-top:14px;">
-                <div class="field">
-                    <label>Propriétaire du dépôt (username GitHub)</label>
-                    <input type="text" id="ghOwner" placeholder="ex : lesinfoped" autocomplete="off" spellcheck="false" oninput="saveConfig()">
-                </div>
-                <div class="field">
-                    <label>Nom du dépôt</label>
-                    <input type="text" id="ghRepo" placeholder="ex : infoped" autocomplete="off" spellcheck="false" oninput="saveConfig()">
-                    <p class="field-hint">Le token est stocké dans les secrets GitHub — jamais dans le code.</p>
-                </div>
-            </div>
+            <p style="font-size:13px;color:#888;margin-top:12px;line-height:1.6;">
+                Configuration lue automatiquement depuis
+                <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">data.js</code>.
+                Aucune saisie requise.
+            </p>
         </div>
 
     </div>
@@ -345,44 +339,32 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ══════════════════════════════════════════════════════
-//  CONFIG GITHUB — owner/repo en localStorage, token dans secrets GitHub
+//  CONFIG GITHUB — lue depuis data.js (PED_GITHUB)
 // ══════════════════════════════════════════════════════
-function saveConfig() {
-    const owner = document.getElementById('ghOwner').value.trim();
-    const repo  = document.getElementById('ghRepo').value.trim();
-    localStorage.setItem('ped_gh_config', JSON.stringify({ owner, repo }));
-    updateConfigStatus(owner, repo);
-}
-
 function loadConfig() {
-    const raw = localStorage.getItem('ped_gh_config');
-    if (raw) {
-        const { owner, repo } = JSON.parse(raw);
-        document.getElementById('ghOwner').value = owner || '';
-        document.getElementById('ghRepo').value  = repo  || '';
-        updateConfigStatus(owner, repo);
-    } else {
-        updateConfigStatus('', '');
-    }
-}
-
-function getConfig() {
-    const raw = localStorage.getItem('ped_gh_config');
-    return raw ? JSON.parse(raw) : { owner:'', repo:'' };
-}
-
-function updateConfigStatus(owner, repo) {
+    const { token, owner, repo } = getConfig();
     const el     = document.getElementById('configStatus');
     const notice = document.getElementById('noticeCard');
-    if (owner && repo) {
+    if (token && token !== 'ghp_VOTRE_TOKEN_ICI' && owner && repo) {
         el.className   = 'config-status config-ok';
         el.textContent = '✅ ' + owner + '/' + repo;
         if (notice) notice.style.display = 'none';
     } else {
         el.className   = 'config-status config-warn';
-        el.textContent = '⚠️ Renseignez le dépôt ci-dessous';
+        el.textContent = '⚠️ Remplissez PED_GITHUB dans data.js';
         if (notice) notice.style.display = 'block';
     }
+}
+
+function getConfig() {
+    if (typeof PED_GITHUB !== 'undefined') {
+        return {
+            token: PED_GITHUB.token || '',
+            owner: PED_GITHUB.owner || '',
+            repo:  PED_GITHUB.repo  || ''
+        };
+    }
+    return { token:'', owner:'', repo:'' };
 }
 
 // ══════════════════════════════════════════════════════
@@ -451,12 +433,12 @@ async function confirmDelete() {
     await deployToGitHub();
 }
 
-// ── Cœur : déclenche le workflow GitHub Actions (token côté GitHub) ──
+// ── Cœur : écrit data.js via l'API GitHub (token depuis PED_GITHUB) ──
 async function deployToGitHub() {
-    const { owner, repo } = getConfig();
+    const { token, owner, repo } = getConfig();
 
-    if (!owner || !repo) {
-        showToast('⚠️ Renseignez le dépôt GitHub à gauche');
+    if (!token || token === 'ghp_VOTRE_TOKEN_ICI' || !owner || !repo) {
+        showToast('⚠️ Remplissez PED_GITHUB dans data.js');
         return;
     }
 
@@ -469,35 +451,65 @@ async function deployToGitHub() {
     const btn = document.getElementById('saveBtn');
     btn.disabled = true;
 
-    const usersJson   = JSON.stringify(users, null, 2);
-    const WORKFLOW_URL = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/update-users.yml/dispatches`;
+    const API_BASE = `https://api.github.com/repos/${owner}/${repo}/contents/data.js`;
+    const HEADERS  = {
+        'Authorization': `Bearer ${token}`,
+        'Accept':        'application/vnd.github+json',
+        'Content-Type':  'application/json'
+    };
 
     try {
-        addLog('loading', '🚀', 'Déclenchement du workflow GitHub Actions…');
+        // Étape 1 — récupérer le SHA actuel
+        addLog('loading', '🔍', 'Lecture de data.js sur GitHub…');
+        const getRes = await fetch(API_BASE, { headers: HEADERS });
 
-        const res = await fetch(WORKFLOW_URL, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/vnd.github+json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ ref: 'main', inputs: { users_json: usersJson } })
+        if (!getRes.ok) {
+            if (getRes.status === 401) throw new Error('Token invalide ou expiré — mettez à jour PED_GITHUB dans data.js');
+            if (getRes.status === 404) throw new Error('Dépôt ou fichier introuvable — vérifiez PED_GITHUB dans data.js');
+            throw new Error('Erreur GitHub ' + getRes.status);
+        }
+
+        const fileData = await getRes.json();
+        updateLastLog('success', '✅', 'data.js lu (SHA : ' + fileData.sha.substring(0,7) + '…)');
+
+        // Étape 2 — décoder et remplacer PED_USERS
+        addLog('loading', '🔧', 'Mise à jour du bloc utilisateurs…');
+        const currentContent = decodeURIComponent(escape(atob(fileData.content.replace(/
+/g, ''))));
+        const newContent     = currentContent.replace(
+            /const\s+PED_USERS\s*=\s*\[[\s\S]*?\];/m,
+            buildUsersBlock()
+        );
+
+        if (newContent === currentContent) {
+            updateLastLog('success', 'ℹ️', 'Aucun changement détecté');
+            btn.disabled = false;
+            return;
+        }
+        updateLastLog('success', '✅', 'Bloc utilisateurs prêt');
+
+        // Étape 3 — push
+        addLog('loading', '🚀', 'Envoi vers GitHub…');
+        const putRes = await fetch(API_BASE, {
+            method:  'PUT',
+            headers: HEADERS,
+            body: JSON.stringify({
+                message: '👥 Mise à jour utilisateurs via page admin',
+                content: btoa(unescape(encodeURIComponent(newContent))),
+                sha:     fileData.sha
+            })
         });
 
-        if (res.status === 204) {
-            updateLastLog('success', '✅', 'Workflow déclenché');
-            addLog('loading', '⏳', 'GitHub Actions met à jour le site… (~1 minute)');
-            await wait(65000);
-            updateLastLog('success', '🎉', 'Déploiement terminé ! Le site est à jour.');
-            showToast('🎉 Utilisateurs mis à jour !');
-        } else if (res.status === 401 || res.status === 403) {
-            throw new Error('Accès refusé — vérifiez les permissions du workflow dans le dépôt');
-        } else if (res.status === 404) {
-            throw new Error('Workflow introuvable — vérifiez que .github/workflows/update-users.yml est dans le dépôt');
-        } else {
-            const d = await res.json().catch(() => ({}));
-            throw new Error(d.message || 'Erreur ' + res.status);
+        if (!putRes.ok) {
+            const err = await putRes.json();
+            throw new Error(err.message || 'Erreur lors du push');
         }
+
+        updateLastLog('success', '✅', 'Envoyé sur GitHub');
+        addLog('loading', '⏳', 'GitHub Pages redéploie… (~1 minute)');
+        await wait(65000);
+        updateLastLog('success', '🎉', 'Site mis à jour !');
+        showToast('🎉 Utilisateurs déployés avec succès !');
 
     } catch (e) {
         updateLastLog('error', '❌', e.message);
