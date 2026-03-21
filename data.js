@@ -171,27 +171,3 @@ const PED_AGENDA = [
 
 const PED_LAST_UPDATE = "21/03/2026";
 
-/**
- * ──────────────────────────────────────────────
- *  CONFIGURATION GITHUB (pour la page admin)
- * ──────────────────────────────────────────────
- *  Ces informations permettent à la page admin de
- *  modifier automatiquement ce fichier sur GitHub,
- *  quel que soit le poste ou le navigateur utilisé.
- *
- *  ⚠️  Le token donne accès en écriture à votre dépôt.
- *      Passez le dépôt GitHub en "Private" pour que
- *      le token ne soit pas visible publiquement.
- *
- *  token : Personal Access Token (ghp_xxx...)
- *          → github.com/settings/tokens/new (cocher "repo")
- *  owner : votre username GitHub
- *  repo  : nom du dépôt
- */
-
-const PED_GITHUB = {
-    token: "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",   // ← à remplir une seule fois
-    owner: "lesinfoped",             // ← votre username GitHub
-    repo:  "infoped"                 // ← nom du dépôt remplir
-};
-

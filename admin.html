@@ -225,19 +225,26 @@
             </div>
         </div>
 
-        <!-- Config GitHub — lue depuis data.js -->
+        <!-- Config GitHub — owner/repo uniquement, token dans les secrets GitHub -->
         <div class="card">
             <div class="card-title">🔑 Connexion GitHub</div>
             <div class="config-status config-warn" id="configStatus">⚠️ Vérification…</div>
-            <p style="font-size:13px;color:#888;margin-top:12px;line-height:1.6;">
-                La configuration est lue depuis <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">data.js</code>.<br>
-                Pour modifier le token, éditez la variable <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">PED_GITHUB</code> dans ce fichier et committez.
-            </p>
+            <div class="config-fields open" id="configFields" style="margin-top:14px;">
+                <div class="field">
+                    <label>Propriétaire du dépôt (username GitHub)</label>
+                    <input type="text" id="ghOwner" placeholder="ex : lesinfoped" autocomplete="off" spellcheck="false" oninput="saveConfig()">
+                </div>
+                <div class="field">
+                    <label>Nom du dépôt</label>
+                    <input type="text" id="ghRepo" placeholder="ex : infoped" autocomplete="off" spellcheck="false" oninput="saveConfig()">
+                    <p class="field-hint">Le token est stocké dans les secrets GitHub — jamais dans le code.</p>
+                </div>
+            </div>
         </div>
 
     </div>
 
-    <!-- ══ COLONNE DROITE =══ -->
+    <!-- ══ COLONNE DROITE ══ -->
     <div class="col-right">
 
         <!-- Liste utilisateurs -->
@@ -273,11 +280,11 @@
                 </div>
                 <div class="step">
                     <span class="snum">4</span>
-                    <span class="stxt">Dans <code>data.js</code>, remplacer <code>ghp_VOTRE_TOKEN_ICI</code> par votre token, puis <code>git commit &amp;&amp; git push</code></span>
+                    <span class="stxt">Sur GitHub → votre dépôt → <strong>Settings → Secrets → Actions → New secret</strong><br>Nom : <code>GITHUB_TOKEN</code> — GitHub le gère automatiquement, rien à faire !</span>
                 </div>
                 <div class="step">
                     <span class="snum">5</span>
-                    <span class="stxt">✅ C'est tout — tous les admins sur tous les postes peuvent utiliser la page admin sans rien configurer</span>
+                    <span class="stxt">Renseignez le nom du dépôt dans le champ <strong>Connexion GitHub</strong> à gauche. C'est tout — aucun token à saisir par les admins.</span>
                 </div>
             </div>
         </div>
@@ -338,28 +345,44 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ══════════════════════════════════════════════════════
-//  CONFIG GITHUB — lue depuis data.js (PED_GITHUB)
+//  CONFIG GITHUB — owner/repo en localStorage, token dans secrets GitHub
 // ══════════════════════════════════════════════════════
+function saveConfig() {
+    const owner = document.getElementById('ghOwner').value.trim();
+    const repo  = document.getElementById('ghRepo').value.trim();
+    localStorage.setItem('ped_gh_config', JSON.stringify({ owner, repo }));
+    updateConfigStatus(owner, repo);
+}
+
 function loadConfig() {
-    const { token, owner, repo } = getConfig();
-    const el     = document.getElementById('configStatus');
-    const notice = document.getElementById('noticeCard');
-    if (token && token !== 'ghp_VOTRE_TOKEN_ICI' && owner && repo) {
-        el.className   = 'config-status config-ok';
-        el.textContent = '✅ Configuré — ' + owner + '/' + repo;
-        if (notice) notice.style.display = 'none';
+    const raw = localStorage.getItem('ped_gh_config');
+    if (raw) {
+        const { owner, repo } = JSON.parse(raw);
+        document.getElementById('ghOwner').value = owner || '';
+        document.getElementById('ghRepo').value  = repo  || '';
+        updateConfigStatus(owner, repo);
     } else {
-        el.className   = 'config-status config-warn';
-        el.textContent = '⚠️ Token manquant — éditez PED_GITHUB dans data.js';
-        if (notice) notice.style.display = 'block';
+        updateConfigStatus('', '');
     }
 }
 
 function getConfig() {
-    if (typeof PED_GITHUB !== 'undefined') {
-        return { token: PED_GITHUB.token || '', owner: PED_GITHUB.owner || '', repo: PED_GITHUB.repo || '' };
+    const raw = localStorage.getItem('ped_gh_config');
+    return raw ? JSON.parse(raw) : { owner:'', repo:'' };
+}
+
+function updateConfigStatus(owner, repo) {
+    const el     = document.getElementById('configStatus');
+    const notice = document.getElementById('noticeCard');
+    if (owner && repo) {
+        el.className   = 'config-status config-ok';
+        el.textContent = '✅ ' + owner + '/' + repo;
+        if (notice) notice.style.display = 'none';
+    } else {
+        el.className   = 'config-status config-warn';
+        el.textContent = '⚠️ Renseignez le dépôt ci-dessous';
+        if (notice) notice.style.display = 'block';
     }
-    return { token:'', owner:'', repo:'' };
 }
 
 // ══════════════════════════════════════════════════════
@@ -428,17 +451,15 @@ async function confirmDelete() {
     await deployToGitHub();
 }
 
-// ── Cœur : écriture du fichier data.js via l'API GitHub ──────────────
+// ── Cœur : déclenche le workflow GitHub Actions (token côté GitHub) ──
 async function deployToGitHub() {
-    const { token, owner, repo } = getConfig();
+    const { owner, repo } = getConfig();
 
-    if (!token || !owner || !repo) {
-        showToast('⚠️ Configurez d\'abord le token GitHub');
-        document.getElementById('configFields').classList.add('open');
+    if (!owner || !repo) {
+        showToast('⚠️ Renseignez le dépôt GitHub à gauche');
         return;
     }
 
-    // Affiche le panneau de log
     const deployCard = document.getElementById('deployCard');
     const deployLog  = document.getElementById('deployLog');
     deployCard.style.display = 'block';
@@ -448,70 +469,35 @@ async function deployToGitHub() {
     const btn = document.getElementById('saveBtn');
     btn.disabled = true;
 
-    const FILE_PATH = 'data.js';
-    const API_BASE  = `https://api.github.com/repos/${owner}/${repo}/contents/${FILE_PATH}`;
+    const usersJson   = JSON.stringify(users, null, 2);
+    const WORKFLOW_URL = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/update-users.yml/dispatches`;
 
     try {
-        // ── Étape 1 : récupérer le SHA actuel du fichier ──────────────
-        addLog('loading', '🔍', 'Lecture du fichier data.js sur GitHub…');
-        const getRes = await fetch(API_BASE, {
+        addLog('loading', '🚀', 'Déclenchement du workflow GitHub Actions…');
+
+        const res = await fetch(WORKFLOW_URL, {
+            method: 'POST',
             headers: {
-                'Authorization': `Bearer ${token}`,
-                'Accept': 'application/vnd.github+json'
-            }
-        });
-
-        if (!getRes.ok) {
-            if (getRes.status === 404) throw new Error('Fichier data.js introuvable dans le dépôt "' + owner + '/' + repo + '"');
-            if (getRes.status === 401) throw new Error('Token GitHub invalide ou expiré');
-            throw new Error('Erreur GitHub : ' + getRes.status);
-        }
-
-        const fileData = await getRes.json();
-        const sha = fileData.sha;
-        updateLastLog('success', '✅', 'data.js récupéré (SHA : ' + sha.substring(0,7) + '…)');
-
-        // ── Étape 2 : décoder le contenu actuel et remplacer PED_USERS ─
-        addLog('loading', '🔧', 'Mise à jour du bloc utilisateurs…');
-        const currentContent = atob(fileData.content.replace(/\n/g, ''));
-        const newUsersBlock  = buildUsersBlock();
-        const newContent     = replaceUsersBlock(currentContent, newUsersBlock);
-
-        if (newContent === currentContent) {
-            updateLastLog('success', 'ℹ️', 'Aucun changement détecté');
-            btn.disabled = false;
-            return;
-        }
-        updateLastLog('success', '✅', 'Bloc utilisateurs mis à jour');
-
-        // ── Étape 3 : push du fichier mis à jour ──────────────────────
-        addLog('loading', '🚀', 'Envoi vers GitHub…');
-        const putRes = await fetch(API_BASE, {
-            method: 'PUT',
-            headers: {
-                'Authorization': `Bearer ${token}`,
                 'Accept': 'application/vnd.github+json',
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                message: '👥 Mise à jour des utilisateurs via page admin',
-                content: btoa(unescape(encodeURIComponent(newContent))),
-                sha:     sha
-            })
+            body: JSON.stringify({ ref: 'main', inputs: { users_json: usersJson } })
         });
 
-        if (!putRes.ok) {
-            const err = await putRes.json();
-            throw new Error(err.message || 'Erreur lors du push');
+        if (res.status === 204) {
+            updateLastLog('success', '✅', 'Workflow déclenché');
+            addLog('loading', '⏳', 'GitHub Actions met à jour le site… (~1 minute)');
+            await wait(65000);
+            updateLastLog('success', '🎉', 'Déploiement terminé ! Le site est à jour.');
+            showToast('🎉 Utilisateurs mis à jour !');
+        } else if (res.status === 401 || res.status === 403) {
+            throw new Error('Accès refusé — vérifiez les permissions du workflow dans le dépôt');
+        } else if (res.status === 404) {
+            throw new Error('Workflow introuvable — vérifiez que .github/workflows/update-users.yml est dans le dépôt');
+        } else {
+            const d = await res.json().catch(() => ({}));
+            throw new Error(d.message || 'Erreur ' + res.status);
         }
-
-        updateLastLog('success', '✅', 'Fichier envoyé sur GitHub');
-
-        // ── Étape 4 : attente du déploiement GitHub Pages ─────────────
-        addLog('loading', '⏳', 'GitHub Pages redéploie… (~1 minute)');
-        await wait(62000);
-        updateLastLog('success', '🎉', 'Site mis à jour ! Rechargez la page pour voir les changements.');
-        showToast('🎉 Déploiement terminé !');
 
     } catch (e) {
         updateLastLog('error', '❌', e.message);
@@ -521,31 +507,7 @@ async function deployToGitHub() {
     btn.disabled = false;
 }
 
-// ── Construit le nouveau bloc PED_USERS ─────────────────────────────
-function buildUsersBlock() {
-    const lines = ['const PED_USERS = ['];
-    users.forEach((u, i) => {
-        const comma = i < users.length - 1 ? ',' : '';
-        lines.push('    {');
-        lines.push(`        username: "${u.username}",`);
-        lines.push(`        password: "${u.password}",`);
-        lines.push(`        role: "${u.role}"`);
-        lines.push('    }' + comma);
-    });
-    lines.push('];');
-    return lines.join('\n');
-}
 
-// ── Remplace le bloc PED_USERS dans le fichier ───────────────────────
-function replaceUsersBlock(content, newBlock) {
-    // Regex souple : correspond à "const PED_USERS = [" ... "];"
-    const regex = /const\s+PED_USERS\s*=\s*\[[\s\S]*?\];/m;
-    if (regex.test(content)) {
-        return content.replace(regex, newBlock);
-    }
-    // Fallback : ajouter à la fin si non trouvé
-    return content + '\n\n' + newBlock;
-}
 
 // ══════════════════════════════════════════════════════
 //  LOG UI
