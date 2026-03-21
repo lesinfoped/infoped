@@ -188,3 +188,4 @@ const PED_GITHUB = {
     owner: "lesinfoped",             // ← votre username GitHub
     repo:  "infoped"                 // ← nom du dépôt a remplir
 };
+
