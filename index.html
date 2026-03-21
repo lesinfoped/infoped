@@ -4,11 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Les Info PED</title>
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
     <style>
         :root {
             --primary:#FF6B9D; --primary-light:#FFB4D6;
@@ -28,6 +26,7 @@
         @keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
         @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
         @keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+        @keyframes spin{to{transform:rotate(360deg);}}
 
         body {
             font-family:'DM Sans',sans-serif;
@@ -36,21 +35,12 @@
             min-height:100vh; overflow-x:hidden;
         }
 
-        /* Bandeau invité */
         .guest-banner {
             display:none; background:rgba(255,230,109,0.95); color:#1A1A2E;
             text-align:center; padding:11px 20px; font-weight:700; font-size:14px;
             position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.15);
         }
         .guest-banner a { color:#C94A6D; text-decoration:underline; cursor:pointer; margin-left:10px; font-weight:800; }
-
-        /* Bandeau admin — lien vers guide de modification */
-        .admin-banner {
-            display:none; background:rgba(102,126,234,0.92); color:white;
-            text-align:center; padding:10px 20px; font-size:13px; font-weight:600;
-            position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.15);
-        }
-        .admin-banner a { color:#FFE66D; text-decoration:underline; cursor:pointer; margin-left:6px; }
 
         .particles { position:fixed; inset:0; pointer-events:none; z-index:0; }
         .particle { position:absolute; background:rgba(255,255,255,0.15); border-radius:50%; animation:float 8s ease-in-out infinite; }
@@ -82,7 +72,10 @@
             cursor:pointer; transition:all 0.3s; text-decoration:none; display:inline-block;
             font-family:'DM Sans',sans-serif;
         }
-        .btn-admin { background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:none; }
+        .btn-edit   { background:linear-gradient(135deg,#4ECDC4,#44A08D); color:white; display:none; }
+        .btn-edit.active { background:linear-gradient(135deg,#FFE66D,#FFC000); color:#1A1A2E; }
+        .btn-edit:hover { transform:translateY(-2px); }
+        .btn-admin  { background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:none; }
         .btn-admin:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(102,126,234,0.5); }
         .btn-logout { background:linear-gradient(135deg,#FF6B9D,#C94A6D); color:white; box-shadow:var(--shadow-md); }
         .btn-logout:hover { transform:translateY(-2px); box-shadow:var(--shadow-glow); }
@@ -176,6 +169,95 @@
         .detail-label{font-weight:700;min-width:100px;}
         .detail-value{color:#555;}
 
+        /* ── MODE ÉDITION ── */
+        body.edit-mode .block { outline:2px dashed rgba(255,107,157,0.5); outline-offset:3px; }
+
+        .edit-actions {
+            display:none; position:absolute; right:6px; top:50%;
+            transform:translateY(-50%); gap:4px; z-index:10;
+        }
+        body.edit-mode .block ul li { padding-right:72px; }
+        body.edit-mode .edit-actions { display:flex; }
+
+        .eact {
+            width:28px; height:28px; border:none; border-radius:8px;
+            cursor:pointer; font-size:13px; display:flex; align-items:center;
+            justify-content:center; transition:all 0.2s;
+        }
+        .eact-e { background:rgba(78,205,196,0.8); color:white; }
+        .eact-e:hover { background:#4ECDC4; transform:scale(1.1); }
+        .eact-d { background:rgba(255,107,157,0.8); color:white; }
+        .eact-d:hover { background:#FF6B9D; transform:scale(1.1); }
+
+        .add-btn {
+            display:none; width:100%; padding:10px; margin-top:10px;
+            border:2px dashed rgba(255,107,157,0.5); border-radius:12px;
+            background:rgba(255,107,157,0.07); color:var(--primary);
+            font-weight:700; font-size:14px; cursor:pointer;
+            transition:all 0.2s; font-family:'DM Sans',sans-serif;
+        }
+        body.edit-mode .add-btn { display:block; }
+        .add-btn:hover { background:rgba(255,107,157,0.16); }
+
+        /* Agenda edit */
+        body.edit-mode .agenda-item { outline:2px dashed rgba(255,107,157,0.35); outline-offset:1px; }
+        .agenda-edit-btns { display:none; gap:5px; margin-left:8px; }
+        body.edit-mode .agenda-edit-btns { display:flex; }
+        .add-agenda-btn {
+            display:none; width:100%; padding:10px; margin-top:8px;
+            border:2px dashed rgba(255,107,157,0.5); border-radius:12px;
+            background:rgba(255,107,157,0.07); color:var(--primary);
+            font-weight:700; font-size:14px; cursor:pointer;
+            transition:all 0.2s; font-family:'DM Sans',sans-serif;
+        }
+        body.edit-mode .add-agenda-btn { display:block; }
+        .add-agenda-btn:hover { background:rgba(255,107,157,0.16); }
+
+        /* ── MODAL ── */
+        .modal-ov {
+            display:none; position:fixed; inset:0;
+            background:rgba(26,26,46,0.7); backdrop-filter:blur(8px);
+            z-index:1000; align-items:center; justify-content:center;
+        }
+        .modal-ov.open { display:flex; }
+        .modal {
+            background:white; border-radius:24px; padding:34px;
+            width:90%; max-width:500px; box-shadow:0 30px 80px rgba(0,0,0,0.3);
+            animation:fadeInUp 0.25s ease-out;
+        }
+        .modal h3 { font-family:'Sora',sans-serif; font-size:20px; font-weight:700; color:var(--dark); margin-bottom:20px; }
+        .mf { margin-bottom:14px; }
+        .mf label { display:block; font-weight:600; font-size:13px; color:#555; margin-bottom:5px; }
+        .mf input,.mf textarea,.mf select {
+            width:100%; padding:11px 14px; border:2px solid #e8e8f0; border-radius:11px;
+            font-size:14px; font-family:'DM Sans',sans-serif; color:var(--dark); outline:none; transition:border-color 0.2s;
+        }
+        .mf input:focus,.mf textarea:focus,.mf select:focus { border-color:var(--primary); }
+        .mf textarea { resize:vertical; min-height:80px; }
+        .mrow { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .mrow .mf { margin-bottom:0; }
+        .modal-actions { display:flex; gap:10px; justify-content:flex-end; margin-top:20px; }
+        .mbtn-cancel { padding:10px 22px; border-radius:50px; border:2px solid #e0e0e8; background:white; color:#555; font-weight:600; font-size:14px; cursor:pointer; font-family:'DM Sans',sans-serif; }
+        .mbtn-save {
+            padding:10px 26px; border-radius:50px; border:none;
+            background:linear-gradient(135deg,var(--primary),#C94A6D);
+            color:white; font-weight:700; font-size:14px; cursor:pointer;
+            font-family:'DM Sans',sans-serif; display:flex; align-items:center; gap:7px;
+        }
+        .mbtn-save:disabled { opacity:0.6; cursor:wait; }
+        .mbtn-spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.3); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:none; }
+        .mbtn-save.loading .mbtn-spinner { display:block; }
+        .mbtn-save.loading .mbtn-label { display:none; }
+
+        /* Toast */
+        .toast {
+            position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(30px);
+            background:var(--dark); color:white; padding:11px 22px; border-radius:50px;
+            font-weight:600; font-size:14px; box-shadow:var(--shadow-lg);
+            opacity:0; transition:all 0.3s; z-index:2000; pointer-events:none; white-space:nowrap;
+        }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
         #last-update {
             position:fixed; bottom:25px; left:25px; background:var(--glass-strong); backdrop-filter:blur(20px);
             padding:12px 20px; border-radius:50px; box-shadow:var(--shadow-lg); font-weight:600; font-size:13px;
@@ -186,21 +268,13 @@
         .h60{min-height:500px;} .h40{min-height:300px;} .h20{min-height:200px;} .h80{min-height:600px;}
 
         @media(max-width:1200px){.main-layout{grid-template-columns:1fr 1fr;}.panel.small:last-child{grid-column:1/-1;}}
-        @media(max-width:768px){.main-layout{grid-template-columns:1fr;}.top-menu ul{flex-direction:column;}}
+        @media(max-width:768px){.main-layout{grid-template-columns:1fr;}.top-menu ul{flex-direction:column;}.btn-admin{display:none!important;}}
     </style>
 </head>
 <body>
-    <!-- Bandeau invité -->
     <div class="guest-banner" id="guestBanner">
         👁️ Vous consultez en mode <strong>invité</strong> — lecture seule.
         <a onclick="logout()">Se connecter →</a>
-    </div>
-
-    <!-- Bandeau admin -->
-    <div class="admin-banner" id="adminBanner">
-        👑 Mode administrateur — pour modifier le contenu, éditez
-        <a href="https://github.com" id="githubLink" target="_blank">data.js sur GitHub</a>
-        · le site se met à jour en ~1 min.
     </div>
 
     <div class="particles">
@@ -209,6 +283,7 @@
     </div>
 
     <div class="top-btns">
+        <button class="top-btn btn-edit" id="editBtn" onclick="toggleEdit()">✏️ Éditer</button>
         <a class="top-btn btn-admin" id="adminBtn" href="admin.html">⚙️ Utilisateurs</a>
         <button class="top-btn btn-logout" onclick="logout()">🚪 Déconnexion</button>
     </div>
@@ -232,148 +307,450 @@
         </nav>
 
         <div class="main-layout">
-            <!-- COLONNE GAUCHE -->
             <div class="panel large">
                 <div class="block h60 block-medicaments" id="medicaments">
                     <h2 class="menu-title">💊 Médicaments / Protocoles</h2>
                     <ul id="list-medicaments"></ul>
+                    <button class="add-btn" onclick="openAddItem('medicaments')">+ Ajouter un élément</button>
                 </div>
                 <div class="block h20 block-hygiene" id="hygiene">
                     <h2 class="menu-title">🦠 Hygiène</h2>
                     <ul id="list-hygiene"></ul>
+                    <button class="add-btn" onclick="openAddItem('hygiene')">+ Ajouter un élément</button>
                 </div>
                 <div class="block h20 block-divers" id="divers">
                     <h2 class="menu-title">📋 Divers</h2>
                     <ul id="list-divers"></ul>
+                    <button class="add-btn" onclick="openAddItem('divers')">+ Ajouter un élément</button>
                 </div>
             </div>
 
-            <!-- COLONNE MILIEU -->
             <div class="panel small">
                 <div class="block h60" id="projets">
                     <h2 class="menu-title">💡 Projets</h2>
                     <ul id="list-projets"></ul>
+                    <button class="add-btn" onclick="openAddItem('projets')">+ Ajouter un élément</button>
                 </div>
                 <div class="block h40 block-rh" id="rh">
                     <h2 class="menu-title">👥 RH</h2>
                     <ul id="list-rh"></ul>
+                    <button class="add-btn" onclick="openAddItem('rh')">+ Ajouter un élément</button>
                 </div>
             </div>
 
-            <!-- COLONNE DROITE -->
             <div class="panel small">
                 <div class="block h80" id="agenda">
                     <h2 class="menu-title">📆 Agenda</h2>
                     <div id="agenda-list"></div>
+                    <button class="add-agenda-btn" onclick="openAddAgenda()">+ Ajouter un évènement</button>
                 </div>
             </div>
         </div>
     </div>
 
     <div id="last-update">🕒 Dernière mise à jour : <span id="lastModified"></span></div>
+    <div class="toast" id="toast"></div>
 
-    <!-- data.js doit être chargé avant ce script -->
+    <!-- Modal item -->
+    <div class="modal-ov" id="itemModal">
+        <div class="modal">
+            <h3 id="itemModalTitle">Modifier l'élément</h3>
+            <div class="mf">
+                <label>Texte</label>
+                <textarea id="itemText" rows="3" placeholder="Texte de l'élément…"></textarea>
+            </div>
+            <div class="mf">
+                <label>Lien (optionnel)</label>
+                <input type="url" id="itemLink" placeholder="https://…">
+            </div>
+            <div class="mf">
+                <label>Type</label>
+                <select id="itemType">
+                    <option value="normal">Normal</option>
+                    <option value="alert">🚨 Alerte (encadré rouge)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="mbtn-cancel" onclick="closeModal('itemModal')">Annuler</button>
+                <button class="mbtn-save" id="itemSaveBtn" onclick="saveItem()">
+                    <span class="mbtn-label">💾 Enregistrer</span>
+                    <span class="mbtn-spinner"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal agenda -->
+    <div class="modal-ov" id="agendaModal">
+        <div class="modal">
+            <h3 id="agendaModalTitle">Ajouter un évènement</h3>
+            <div class="mrow">
+                <div class="mf"><label>Jour</label><input type="text" id="agJour" maxlength="2" placeholder="15"></div>
+                <div class="mf"><label>Mois</label><input type="text" id="agMois" maxlength="5" placeholder="MAI"></div>
+            </div>
+            <div class="mf" style="margin-top:12px"><label>Titre</label><input type="text" id="agTitre" placeholder="Titre de l'évènement"></div>
+            <div class="mf"><label>Heure</label><input type="text" id="agHeure" placeholder="14h00 - 16h00"></div>
+            <div class="mf"><label>Lieu</label><input type="text" id="agLieu" placeholder="Salle de réunion A"></div>
+            <div class="mf"><label>Participants</label><input type="text" id="agPart" placeholder="Dr. Martin, équipe…"></div>
+            <div class="modal-actions">
+                <button class="mbtn-cancel" onclick="closeModal('agendaModal')">Annuler</button>
+                <button class="mbtn-save" id="agSaveBtn" onclick="saveAgenda()">
+                    <span class="mbtn-label">💾 Enregistrer</span>
+                    <span class="mbtn-spinner"></span>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="data.js"></script>
     <script>
-        // ── Auth ──────────────────────────────────────
-        const stored = sessionStorage.getItem('ped_user');
-        if (!stored) { window.location.replace('login.html'); }
-        const currentUser = JSON.parse(stored);
+    // ── Auth ─────────────────────────────────────────────
+    const stored = sessionStorage.getItem('ped_user');
+    if (!stored) { window.location.replace('login.html'); }
+    const currentUser = JSON.parse(stored);
 
-        // ── Rendu des sections ──────────────────────
-        function renderSection(sectionId, items) {
-            const ul = document.getElementById('list-' + sectionId);
-            ul.innerHTML = '';
-            if (!items || items.length === 0) {
-                ul.innerHTML = '<li>Aucune information disponible</li>'; return;
-            }
-            items.forEach(item => {
-                const li = document.createElement('li');
-                if (item.type === 'alert') {
-                    li.classList.add('alert-item');
-                    li.innerHTML = `<span class="icon">🚨</span><span class="text">${escHtml(item.texte)}</span>`;
-                } else if (item.lien) {
-                    li.classList.add('with-button');
-                    li.innerHTML = `<span>${escHtml(item.texte)}</span>
-                        <a href="${escHtml(item.lien)}" target="_blank" rel="noopener">
-                            <button title="Ouvrir le document">📎</button>
-                        </a>`;
-                } else {
-                    li.textContent = item.texte;
-                }
-                ul.appendChild(li);
-            });
+    // ── État local (copie de travail) ─────────────────────
+    let localContent = {};
+    let localAgenda  = [];
+    let isEditMode   = false;
+    let editSection  = null;
+    let editIdx      = null;
+    let editAgendaIdx = null;
+
+    // ── Init ─────────────────────────────────────────────
+    (function init() {
+        const months = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+        document.getElementById('pageSubtitle').textContent = months[new Date().getMonth()] + ' ' + new Date().getFullYear();
+        document.getElementById('lastModified').textContent = typeof PED_LAST_UPDATE !== 'undefined' ? PED_LAST_UPDATE : '—';
+
+        const badge = document.getElementById('userBadge');
+        if (currentUser.role === 'guest') {
+            document.getElementById('guestBanner').style.display = 'block';
+            badge.textContent = '👁️ Mode invité';
+        } else if (currentUser.role === 'admin') {
+            document.getElementById('editBtn').style.display = 'block';
+            document.getElementById('adminBtn').style.display = 'block';
+            badge.textContent = '👑 ' + currentUser.username + ' (Admin)';
+        } else {
+            badge.textContent = '👤 ' + currentUser.username;
         }
 
-        // ── Rendu agenda ─────────────────────────────
-        function renderAgenda(events) {
-            const container = document.getElementById('agenda-list');
-            container.innerHTML = '';
-            if (!events || events.length === 0) {
-                container.innerHTML = '<p style="color:#888;font-size:14px">Aucun évènement à venir</p>'; return;
+        // Copie de travail depuis data.js
+        localContent = JSON.parse(JSON.stringify(PED_CONTENT));
+        localAgenda  = JSON.parse(JSON.stringify(PED_AGENDA));
+
+        renderAll();
+    })();
+
+    // ── Rendu ────────────────────────────────────────────
+    function renderAll() {
+        ['medicaments','hygiene','divers','projets','rh'].forEach(s => renderSection(s));
+        renderAgenda();
+    }
+
+    function renderSection(sectionId) {
+        const ul    = document.getElementById('list-' + sectionId);
+        const items = localContent[sectionId] || [];
+        ul.innerHTML = '';
+        if (items.length === 0) {
+            ul.innerHTML = '<li style="color:#aaa;font-style:italic">Aucun élément</li>'; return;
+        }
+        items.forEach((item, idx) => {
+            const li = document.createElement('li');
+            if (item.type === 'alert') {
+                li.classList.add('alert-item');
+                li.innerHTML = `<span class="icon">🚨</span><span class="text">${escHtml(item.texte)}</span>`;
+            } else if (item.lien) {
+                li.classList.add('with-button');
+                li.innerHTML = `<span>${escHtml(item.texte)}</span><a href="${escHtml(item.lien)}" target="_blank" rel="noopener"><button title="Ouvrir">📎</button></a>`;
+            } else {
+                li.textContent = item.texte;
             }
-            events.forEach(ev => {
-                const div = document.createElement('div');
-                div.className = 'agenda-item';
-                div.innerHTML = `
-                    <div class="agenda-header" onclick="this.closest('.agenda-item').classList.toggle('expanded')">
-                        <div class="agenda-date">
-                            <span class="day">${escHtml(ev.jour)}</span>
-                            <span class="month">${escHtml(ev.mois)}</span>
-                        </div>
-                        <div class="agenda-main">
-                            <div class="agenda-content">${escHtml(ev.titre)}</div>
-                            <div class="agenda-arrow">▶</div>
+            // Boutons édition
+            const acts = document.createElement('span');
+            acts.className = 'edit-actions';
+            acts.innerHTML = `
+                <button class="eact eact-e" onclick="openEditItem('${sectionId}',${idx},event)" title="Modifier">✏️</button>
+                <button class="eact eact-d" onclick="deleteItem('${sectionId}',${idx},event)" title="Supprimer">🗑️</button>`;
+            li.appendChild(acts);
+            ul.appendChild(li);
+        });
+    }
+
+    function renderAgenda() {
+        const container = document.getElementById('agenda-list');
+        container.innerHTML = '';
+        if (localAgenda.length === 0) {
+            container.innerHTML = '<p style="color:#888;font-size:14px">Aucun évènement à venir</p>'; return;
+        }
+        localAgenda.forEach((ev, idx) => {
+            const div = document.createElement('div');
+            div.className = 'agenda-item';
+            div.innerHTML = `
+                <div class="agenda-header" onclick="toggleAgenda(this.closest('.agenda-item'))">
+                    <div class="agenda-date">
+                        <span class="day">${escHtml(ev.jour)}</span>
+                        <span class="month">${escHtml(ev.mois)}</span>
+                    </div>
+                    <div class="agenda-main">
+                        <div class="agenda-content">${escHtml(ev.titre)}</div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="agenda-edit-btns">
+                                <button class="eact eact-e" onclick="openEditAgenda(${idx},event)" title="Modifier">✏️</button>
+                                <button class="eact eact-d" onclick="deleteAgenda(${idx},event)" title="Supprimer">🗑️</button>
+                            </span>
+                            <span class="agenda-arrow">▶</span>
                         </div>
                     </div>
-                    <div class="agenda-details">
-                        <div class="agenda-details-content">
-                            ${ev.heure        ? `<div class="detail-row"><span class="detail-icon">🕐</span><span class="detail-label">Heure :</span><span class="detail-value">${escHtml(ev.heure)}</span></div>` : ''}
-                            ${ev.lieu         ? `<div class="detail-row"><span class="detail-icon">📍</span><span class="detail-label">Lieu :</span><span class="detail-value">${escHtml(ev.lieu)}</span></div>` : ''}
-                            ${ev.participants  ? `<div class="detail-row"><span class="detail-icon">👥</span><span class="detail-label">Participants :</span><span class="detail-value">${escHtml(ev.participants)}</span></div>` : ''}
-                        </div>
-                    </div>`;
-                container.appendChild(div);
-            });
+                </div>
+                <div class="agenda-details"><div class="agenda-details-content">
+                    ${ev.heure       ? `<div class="detail-row"><span class="detail-icon">🕐</span><span class="detail-label">Heure :</span><span class="detail-value">${escHtml(ev.heure)}</span></div>` : ''}
+                    ${ev.lieu        ? `<div class="detail-row"><span class="detail-icon">📍</span><span class="detail-label">Lieu :</span><span class="detail-value">${escHtml(ev.lieu)}</span></div>` : ''}
+                    ${ev.participants ? `<div class="detail-row"><span class="detail-icon">👥</span><span class="detail-label">Participants :</span><span class="detail-value">${escHtml(ev.participants)}</span></div>` : ''}
+                </div></div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function toggleAgenda(el) { el.classList.toggle('expanded'); }
+
+    // ── Mode édition ─────────────────────────────────────
+    function toggleEdit() {
+        isEditMode = !isEditMode;
+        document.body.classList.toggle('edit-mode', isEditMode);
+        const btn = document.getElementById('editBtn');
+        btn.textContent = isEditMode ? '✅ Terminer' : '✏️ Éditer';
+        btn.classList.toggle('active', isEditMode);
+        if (isEditMode) showToast('✏️ Mode édition activé — cliquez sur ✏️ pour modifier un élément');
+    }
+
+    // ── Modals item ──────────────────────────────────────
+    function openAddItem(section) {
+        editSection = section; editIdx = null;
+        document.getElementById('itemModalTitle').textContent = 'Ajouter un élément';
+        document.getElementById('itemText').value = '';
+        document.getElementById('itemLink').value = '';
+        document.getElementById('itemType').value = 'normal';
+        openModal('itemModal');
+    }
+
+    function openEditItem(section, idx, e) {
+        e.stopPropagation();
+        editSection = section; editIdx = idx;
+        const item = localContent[section][idx];
+        document.getElementById('itemModalTitle').textContent = 'Modifier l\'élément';
+        document.getElementById('itemText').value = item.texte;
+        document.getElementById('itemLink').value = item.lien || '';
+        document.getElementById('itemType').value = item.type || 'normal';
+        openModal('itemModal');
+    }
+
+    async function saveItem() {
+        const texte = document.getElementById('itemText').value.trim();
+        if (!texte) { showToast('⚠️ Le texte ne peut pas être vide'); return; }
+        const lien = document.getElementById('itemLink').value.trim();
+        const type = document.getElementById('itemType').value;
+
+        if (editIdx !== null) {
+            localContent[editSection][editIdx] = { texte, lien, type };
+        } else {
+            localContent[editSection].push({ texte, lien, type });
         }
+        renderSection(editSection);
+        closeModal('itemModal');
+        await deployContent();
+    }
 
-        // ── Init ─────────────────────────────────────
-        (function init() {
-            // Mois courant
-            const months = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
-            document.getElementById('pageSubtitle').textContent = months[new Date().getMonth()] + ' ' + new Date().getFullYear();
+    function deleteItem(section, idx, e) {
+        e.stopPropagation();
+        if (!confirm('Supprimer cet élément ?')) return;
+        localContent[section].splice(idx, 1);
+        renderSection(section);
+        deployContent();
+    }
 
-            // Badge + bandeaux selon le rôle
-            const badge = document.getElementById('userBadge');
-            if (currentUser.role === 'guest') {
-                document.getElementById('guestBanner').style.display = 'block';
-                badge.textContent = '👁️ Mode invité';
-            } else if (currentUser.role === 'admin') {
-                document.getElementById('adminBanner').style.display = 'block';
-                document.getElementById('adminBtn').style.display = 'block';
-                badge.textContent = '👑 ' + currentUser.username + ' (Admin)';
-            } else {
-                badge.textContent = '👤 ' + currentUser.username;
+    // ── Modals agenda ────────────────────────────────────
+    function openAddAgenda() {
+        editAgendaIdx = null;
+        document.getElementById('agendaModalTitle').textContent = 'Ajouter un évènement';
+        ['agJour','agMois','agTitre','agHeure','agLieu','agPart'].forEach(id => document.getElementById(id).value = '');
+        openModal('agendaModal');
+    }
+
+    function openEditAgenda(idx, e) {
+        e.stopPropagation();
+        editAgendaIdx = idx;
+        const ev = localAgenda[idx];
+        document.getElementById('agendaModalTitle').textContent = 'Modifier l\'évènement';
+        document.getElementById('agJour').value  = ev.jour;
+        document.getElementById('agMois').value  = ev.mois;
+        document.getElementById('agTitre').value = ev.titre;
+        document.getElementById('agHeure').value = ev.heure || '';
+        document.getElementById('agLieu').value  = ev.lieu  || '';
+        document.getElementById('agPart').value  = ev.participants || '';
+        openModal('agendaModal');
+    }
+
+    async function saveAgenda() {
+        const jour  = document.getElementById('agJour').value.trim();
+        const mois  = document.getElementById('agMois').value.trim().toUpperCase();
+        const titre = document.getElementById('agTitre').value.trim();
+        if (!jour || !mois || !titre) { showToast('⚠️ Jour, mois et titre requis'); return; }
+
+        const ev = {
+            jour, mois, titre,
+            heure:        document.getElementById('agHeure').value.trim(),
+            lieu:         document.getElementById('agLieu').value.trim(),
+            participants: document.getElementById('agPart').value.trim()
+        };
+
+        if (editAgendaIdx !== null) {
+            localAgenda[editAgendaIdx] = ev;
+        } else {
+            localAgenda.push(ev);
+        }
+        renderAgenda();
+        closeModal('agendaModal');
+        await deployContent();
+    }
+
+    function deleteAgenda(idx, e) {
+        e.stopPropagation();
+        if (!confirm('Supprimer cet évènement ?')) return;
+        localAgenda.splice(idx, 1);
+        renderAgenda();
+        deployContent();
+    }
+
+    // ── Déploiement GitHub ───────────────────────────────
+    async function deployContent() {
+        const cfg = getGHConfig();
+        if (!cfg) { showToast('⚠️ PED_GITHUB non configuré dans data.js'); return; }
+
+        const btn = document.getElementById('editBtn');
+        const origText = btn.textContent;
+        btn.textContent = '⏳ Sauvegarde…';
+        btn.disabled = true;
+
+        const API = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/data.js`;
+        const H   = { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+
+        try {
+            const getRes = await fetch(API, { headers: H });
+            if (!getRes.ok) throw new Error('Lecture data.js échouée (' + getRes.status + ')');
+            const fileData = await getRes.json();
+            const current  = decodeURIComponent(escape(atob(fileData.content.replace(/\n/g, ''))));
+
+            // Remplacer PED_CONTENT
+            let updated = current.replace(
+                /const\s+PED_CONTENT\s*=\s*\{[\s\S]*?\n\};/m,
+                buildContentBlock()
+            );
+            // Remplacer PED_AGENDA
+            updated = updated.replace(
+                /const\s+PED_AGENDA\s*=\s*\[[\s\S]*?\];/m,
+                buildAgendaBlock()
+            );
+            // Mettre à jour la date
+            const today = new Date();
+            const dateStr = String(today.getDate()).padStart(2,'0') + '/' + String(today.getMonth()+1).padStart(2,'0') + '/' + today.getFullYear();
+            updated = updated.replace(
+                /const\s+PED_LAST_UPDATE\s*=\s*"[^"]*";/,
+                `const PED_LAST_UPDATE = "${dateStr}";`
+            );
+
+            const putRes = await fetch(API, {
+                method: 'PUT', headers: H,
+                body: JSON.stringify({
+                    message: '📝 Mise à jour contenu via dashboard',
+                    content: btoa(unescape(encodeURIComponent(updated))),
+                    sha: fileData.sha
+                })
+            });
+
+            if (!putRes.ok) {
+                const err = await putRes.json();
+                throw new Error(err.message || 'Erreur push');
             }
 
-            // Date de mise à jour depuis data.js
-            document.getElementById('lastModified').textContent = typeof PED_LAST_UPDATE !== 'undefined' ? PED_LAST_UPDATE : '—';
+            document.getElementById('lastModified').textContent = dateStr;
+            showToast('✅ Sauvegardé ! Site mis à jour en ~1 minute');
 
-            // Rendu du contenu
-            ['medicaments','hygiene','divers','projets','rh'].forEach(s => {
-                renderSection(s, PED_CONTENT[s] || []);
+        } catch (e) {
+            showToast('❌ ' + e.message);
+        }
+
+        btn.textContent = origText;
+        btn.disabled = false;
+    }
+
+    function getGHConfig() {
+        if (typeof PED_GITHUB === 'undefined') return null;
+        const { token, owner, repo } = PED_GITHUB;
+        if (!token || token === 'ghp_VOTRE_TOKEN_ICI' || !owner || !repo) return null;
+        return { token, owner, repo };
+    }
+
+    // ── Sérialiseurs ─────────────────────────────────────
+    function buildContentBlock() {
+        const sections = ['medicaments','hygiene','divers','projets','rh'];
+        let out = 'const PED_CONTENT = {\n\n';
+        sections.forEach((s, si) => {
+            out += `    ${s}: [\n`;
+            (localContent[s] || []).forEach((item, i) => {
+                const comma = i < (localContent[s].length - 1) ? ',' : '';
+                out += `        {\n`;
+                out += `            texte: ${JSON.stringify(item.texte)},\n`;
+                out += `            lien:  ${JSON.stringify(item.lien || '')},\n`;
+                out += `            type:  ${JSON.stringify(item.type || 'normal')}\n`;
+                out += `        }${comma}\n`;
             });
-            renderAgenda(PED_AGENDA || []);
-        })();
+            const sComma = si < sections.length - 1 ? ',' : '';
+            out += `    ]${sComma}\n\n`;
+        });
+        out += '};';
+        return out;
+    }
 
-        function escHtml(s) {
-            return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        }
+    function buildAgendaBlock() {
+        let out = 'const PED_AGENDA = [\n';
+        localAgenda.forEach((ev, i) => {
+            const comma = i < localAgenda.length - 1 ? ',' : '';
+            out += `    {\n`;
+            out += `        jour:         ${JSON.stringify(ev.jour)},\n`;
+            out += `        mois:         ${JSON.stringify(ev.mois)},\n`;
+            out += `        titre:        ${JSON.stringify(ev.titre)},\n`;
+            out += `        heure:        ${JSON.stringify(ev.heure || '')},\n`;
+            out += `        lieu:         ${JSON.stringify(ev.lieu || '')},\n`;
+            out += `        participants: ${JSON.stringify(ev.participants || '')}\n`;
+            out += `    }${comma}\n`;
+        });
+        out += '];';
+        return out;
+    }
 
-        function logout() {
-            sessionStorage.removeItem('ped_user');
-            window.location.replace('login.html');
-        }
+    // ── Utilitaires ──────────────────────────────────────
+    function openModal(id)  { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-ov').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+    });
+
+    function showToast(msg, duration = 3000) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), duration);
+    }
+
+    function escHtml(s) {
+        return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    function logout() {
+        sessionStorage.removeItem('ped_user');
+        window.location.replace('login.html');
+    }
     </script>
 </body>
 </html>
