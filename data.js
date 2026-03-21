@@ -117,6 +117,11 @@ const PED_CONTENT = {
             texte: "Nouvelles initiatives du service",
             lien:  "",
             type:  "normal"
+        },
+        {
+            texte: "Soso la street",
+            lien:  "benzema.dz",
+            type:  "alert"
         }
     ],
 
@@ -132,6 +137,7 @@ const PED_CONTENT = {
             type:  "alert"
         }
     ]
+
 };
 
 /**
