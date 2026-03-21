@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Les Info PED</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #FF6B9D; --primary-light: #FFB4D6;
+            --secondary: #4ECDC4; --accent: #FFE66D; --dark: #1A1A2E;
+            --glass-bg: rgba(255,255,255,0.08); --glass-border: rgba(255,255,255,0.15);
+            --glass-strong: rgba(255,255,255,0.95);
+            --shadow-sm:0 2px 8px rgba(0,0,0,0.08); --shadow-md:0 8px 24px rgba(0,0,0,0.12);
+            --shadow-lg:0 16px 48px rgba(0,0,0,0.18); --shadow-glow:0 0 40px rgba(255,107,157,0.3);
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        @keyframes fadeInUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(50px);}to{opacity:1;transform:translateX(0);}}
+        @keyframes slideInLeft{from{opacity:0;transform:translateX(-50px);}to{opacity:1;transform:translateX(0);}}
+        @keyframes float{0%,100%{transform:translateY(0);}50%{transform:translateY(-20px);}}
+        @keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+        @keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.05);}}
+        @keyframes gradientShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+        body {
+            font-family:'DM Sans',sans-serif;
+            background:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#f093fb 100%);
+            background-size:400% 400%; animation:gradientShift 15s ease infinite;
+            min-height:100vh; overflow-x:hidden;
+        }
+
+        .guest-banner {
+            display:none; background:rgba(255,230,109,0.95); color:#1A1A2E;
+            text-align:center; padding:11px 20px; font-weight:700; font-size:14px;
+            position:sticky; top:0; z-index:200; box-shadow:0 2px 12px rgba(0,0,0,0.15);
+        }
+        .guest-banner a { color:#C94A6D; text-decoration:underline; cursor:pointer; margin-left:10px; font-weight:800; }
+
+        .particles { position:fixed; inset:0; pointer-events:none; z-index:0; }
+        .particle { position:absolute; background:rgba(255,255,255,0.15); border-radius:50%; animation:float 8s ease-in-out infinite; }
+        .particle:nth-child(1){width:80px;height:80px;top:10%;left:10%;animation-duration:10s;}
+        .particle:nth-child(2){width:60px;height:60px;top:60%;left:80%;animation-delay:2s;animation-duration:12s;}
+        .particle:nth-child(3){width:100px;height:100px;top:80%;left:20%;animation-delay:4s;animation-duration:14s;}
+        .particle:nth-child(4){width:50px;height:50px;top:30%;left:70%;animation-delay:1s;animation-duration:9s;}
+        .particle:nth-child(5){width:70px;height:70px;top:50%;left:50%;animation-delay:3s;animation-duration:11s;}
+
+        .container { position:relative; z-index:1; max-width:1600px; margin:0 auto; padding:20px; }
+
+        .page-title { text-align:center; margin:40px 0 30px; animation:fadeInUp 0.8s ease-out; }
+        .title-main {
+            font-family:'Sora',sans-serif; font-size:clamp(48px,8vw,90px); font-weight:800;
+            background:linear-gradient(135deg,#fff,#FFE66D); -webkit-background-clip:text;
+            -webkit-text-fill-color:transparent; background-clip:text; letter-spacing:-2px; margin-bottom:10px;
+        }
+        .title-sub { font-family:'Sora',sans-serif; font-size:clamp(20px,3vw,30px); font-weight:600; color:rgba(255,255,255,0.9); letter-spacing:4px; }
+        .user-badge {
+            display:inline-block; background:rgba(255,255,255,0.15);
+            border:1px solid rgba(255,255,255,0.25); color:white; border-radius:50px;
+            padding:6px 18px; font-size:13px; font-weight:600; margin-top:12px; backdrop-filter:blur(10px);
+        }
+
+        /* Boutons fixes */
+        .top-btns { position:fixed; top:25px; right:25px; display:flex; gap:10px; z-index:100; }
+        .top-btn {
+            padding:11px 20px; border-radius:50px; border:none; font-weight:700; font-size:13px;
+            cursor:pointer; box-shadow:var(--shadow-md); transition:all 0.3s; text-decoration:none; display:inline-block;
+        }
+        .btn-edit { background:linear-gradient(135deg,#4ECDC4,#44A08D); color:white; display:none; }
+        .btn-edit.active { background:linear-gradient(135deg,#FFE66D,#FFC000); color:#1A1A2E; }
+        .btn-admin { background:linear-gradient(135deg,#667eea,#764ba2); color:white; display:none; }
+        .btn-logout { background:linear-gradient(135deg,#FF6B9D,#C94A6D); color:white; }
+        .top-btn:hover { transform:translateY(-2px); }
+
+        .top-menu {
+            background:var(--glass-bg); backdrop-filter:blur(20px); border:1px solid var(--glass-border);
+            border-radius:60px; padding:12px 30px; margin:0 auto 30px; max-width:1400px;
+            box-shadow:var(--shadow-lg); animation:fadeInUp 0.8s ease-out 0.2s backwards;
+        }
+        .top-menu ul { list-style:none; display:flex; justify-content:space-around; align-items:center; flex-wrap:wrap; gap:10px; }
+        .top-menu li { margin:8px 5px; }
+        .top-menu a {
+            text-decoration:none; color:white; font-weight:600; font-size:14px;
+            padding:12px 24px; border-radius:50px; background:var(--glass-bg);
+            border:1px solid var(--glass-border); transition:all 0.3s; white-space:nowrap; display:inline-block;
+        }
+        .top-menu a:hover { background:rgba(255,255,255,0.25); transform:translateY(-2px); }
+
+        .main-layout { display:grid; grid-template-columns:1.2fr 0.8fr 0.8fr; gap:25px; margin-bottom:50px; }
+        .panel { display:flex; flex-direction:column; gap:25px; }
+        .panel.large{animation:slideInLeft 0.8s ease-out 0.3s backwards;}
+        .panel.small:nth-child(2){animation:fadeInUp 0.8s ease-out 0.4s backwards;}
+        .panel.small:nth-child(3){animation:slideInRight 0.8s ease-out 0.5s backwards;}
+
+        .block {
+            background:var(--glass-strong); backdrop-filter:blur(30px);
+            border:1px solid var(--glass-border); border-radius:24px; padding:28px;
+            box-shadow:var(--shadow-lg); transition:all 0.3s cubic-bezier(0.4,0,0.2,1); position:relative; overflow:hidden;
+        }
+        .block:hover { transform:translateY(-5px); box-shadow:0 20px 60px rgba(0,0,0,0.25); }
+
+        .block-medicaments{background:linear-gradient(135deg,rgba(255,136,154,0.95),rgba(255,184,214,0.95));border:1px solid rgba(255,107,157,0.3);}
+        .block-hygiene{background:linear-gradient(135deg,rgba(78,205,196,0.95),rgba(163,230,226,0.95));border:1px solid rgba(78,205,196,0.3);}
+        .block-rh{background:linear-gradient(135deg,rgba(224,191,211,0.95),rgba(238,217,232,0.95));border:1px solid rgba(224,191,211,0.3);}
+        .block-divers{background:linear-gradient(135deg,rgba(255,230,109,0.95),rgba(255,243,176,0.95));border:1px solid rgba(255,230,109,0.3);}
+
+        .menu-title {
+            font-family:'Sora',sans-serif; font-size:20px; font-weight:700; color:var(--dark);
+            margin:0 0 20px; padding-bottom:15px; border-bottom:3px solid var(--primary);
+            display:flex; align-items:center; gap:10px; position:relative;
+        }
+        .menu-title::after { content:''; position:absolute; bottom:-3px; left:0; width:60px; height:3px; background:var(--secondary); border-radius:10px; }
+
+        .block ul { list-style:none; padding:0; }
+        .block ul li {
+            padding:12px 0; font-size:15px; color:var(--dark);
+            position:relative; padding-left:25px; transition:all 0.2s;
+            border-bottom:1px solid rgba(0,0,0,0.05);
+        }
+        .block ul li:last-child { border-bottom:none; }
+        .block ul li::before { content:'▸'; position:absolute; left:0; color:var(--primary); font-weight:bold; transition:transform 0.2s; }
+        .block ul li:hover { padding-left:30px; }
+        .block ul li:hover::before { transform:translateX(5px); }
+
+        .block ul li.with-button { display:flex; justify-content:space-between; align-items:center; }
+        .block ul li.with-button button {
+            background:linear-gradient(135deg,var(--primary),var(--primary-light));
+            border:none; border-radius:50px; color:white; font-weight:700; font-size:18px;
+            padding:8px 16px; cursor:pointer; transition:all 0.3s; box-shadow:var(--shadow-sm);
+        }
+        .block ul li.with-button button:hover { transform:scale(1.1) rotate(5deg); box-shadow:var(--shadow-glow); }
+
+        .alert {
+            background:linear-gradient(135deg,rgba(255,107,157,0.15),rgba(255,184,214,0.15));
+            border-left:4px solid var(--primary); padding:15px 15px 15px 55px !important;
+            border-radius:12px; margin:8px 0; position:relative; animation:pulse 2s ease-in-out infinite;
+        }
+        .alert .icon { position:absolute; left:15px; top:50%; transform:translateY(-50%); font-size:26px; animation:rotate 3s linear infinite; }
+        .alert .text { font-weight:600; color:var(--dark); }
+
+        /* ── AGENDA ── */
+        .agenda-item {
+            display:flex; flex-direction:column; background:rgba(255,255,255,0.6);
+            border-radius:16px; padding:15px; margin-bottom:15px;
+            transition:all 0.3s; border:1px solid rgba(255,255,255,0.3); overflow:hidden;
+        }
+        .agenda-item:hover { background:rgba(255,255,255,0.8); transform:translateX(4px); }
+        .agenda-header { display:flex; align-items:center; gap:15px; cursor:pointer; }
+        .agenda-date { background:linear-gradient(135deg,var(--primary),#C94A6D); border-radius:12px; padding:8px 12px; text-align:center; min-width:55px; }
+        .agenda-date .day { display:block; font-family:'Sora',sans-serif; font-size:22px; font-weight:800; color:white; line-height:1; }
+        .agenda-date .month { display:block; font-size:11px; font-weight:600; color:rgba(255,255,255,0.85); text-transform:uppercase; }
+        .agenda-main { flex:1; display:flex; justify-content:space-between; align-items:center; }
+        .agenda-content { font-size:15px; font-weight:600; color:var(--dark); }
+        .agenda-arrow { font-size:18px; color:var(--primary); transition:transform 0.3s; }
+        .agenda-item.expanded .agenda-arrow { transform:rotate(90deg); }
+        .agenda-details { max-height:0; overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s,margin-top 0.3s; opacity:0; margin-top:0; }
+        .agenda-item.expanded .agenda-details { max-height:300px; opacity:1; margin-top:15px; }
+        .agenda-details-content { background:linear-gradient(135deg,rgba(255,255,255,0.5),rgba(255,255,255,0.3)); border-radius:12px; padding:15px; border-left:3px solid var(--primary); }
+        .detail-row { display:flex; align-items:center; gap:10px; margin-bottom:10px; font-size:14px; color:var(--dark); }
+        .detail-row:last-child{margin-bottom:0;}
+        .detail-icon{font-size:16px;width:24px;text-align:center;}
+        .detail-label{font-weight:700;min-width:100px;}
+        .detail-value{color:#555;}
+
+        /* ── MODE ÉDITION ── */
+        body.edit-mode .block { outline:2px dashed rgba(255,107,157,0.45); outline-offset:2px; }
+
+        body.edit-mode .block ul li {
+            cursor:default; padding-right:80px; /* espace pour les boutons */
+        }
+        .item-actions {
+            position:absolute; right:6px; top:50%; transform:translateY(-50%);
+            display:none; gap:4px;
+        }
+        body.edit-mode .item-actions { display:flex; }
+        .iact-btn {
+            width:28px; height:28px; border:none; border-radius:7px;
+            cursor:pointer; font-size:13px; display:flex; align-items:center; justify-content:center; transition:all 0.2s;
+        }
+        .iact-edit { background:rgba(78,205,196,0.75); color:white; }
+        .iact-edit:hover { background:#4ECDC4; transform:scale(1.1); }
+        .iact-del { background:rgba(255,107,157,0.75); color:white; }
+        .iact-del:hover { background:#FF6B9D; transform:scale(1.1); }
+
+        .add-item-row {
+            display:none; width:100%; padding:10px; margin-top:10px;
+            border:2px dashed rgba(255,107,157,0.45); border-radius:12px;
+            background:rgba(255,107,157,0.07); color:var(--primary);
+            font-weight:700; font-size:14px; cursor:pointer;
+            transition:all 0.2s; font-family:'DM Sans',sans-serif;
+        }
+        body.edit-mode .add-item-row { display:block; }
+        .add-item-row:hover { background:rgba(255,107,157,0.16); }
+
+        /* Agenda édition */
+        body.edit-mode .agenda-item { outline:2px dashed rgba(255,107,157,0.4); outline-offset:1px; }
+        .agenda-actions { display:none; gap:5px; margin-left:8px; }
+        body.edit-mode .agenda-actions { display:flex; }
+        .add-agenda-row { display:none; width:100%; padding:10px; margin-top:6px; border:2px dashed rgba(255,107,157,0.45); border-radius:12px; background:rgba(255,107,157,0.07); color:var(--primary); font-weight:700; font-size:14px; cursor:pointer; transition:all 0.2s; font-family:'DM Sans',sans-serif; }
+        body.edit-mode .add-agenda-row { display:block; }
+        .add-agenda-row:hover { background:rgba(255,107,157,0.16); }
+
+        /* ── MODAL ── */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(26,26,46,0.7); backdrop-filter:blur(8px); z-index:1000; align-items:center; justify-content:center; }
+        .modal-overlay.open { display:flex; }
+        .modal { background:white; border-radius:24px; padding:36px; width:90%; max-width:520px; box-shadow:0 30px 80px rgba(0,0,0,0.3); animation:fadeInUp 0.3s ease-out; }
+        .modal h3 { font-family:'Sora',sans-serif; font-size:21px; font-weight:700; color:var(--dark); margin-bottom:20px; }
+        .mf { margin-bottom:16px; }
+        .mf label { display:block; font-weight:600; font-size:14px; color:#555; margin-bottom:6px; }
+        .mf input,.mf textarea,.mf select {
+            width:100%; padding:12px 14px; border:2px solid #e8e8f0; border-radius:12px;
+            font-size:15px; font-family:'DM Sans',sans-serif; color:var(--dark); outline:none; transition:border-color 0.2s;
+        }
+        .mf input:focus,.mf textarea:focus,.mf select:focus { border-color:var(--primary); }
+        .mf textarea { resize:vertical; min-height:80px; }
+        .mrow { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+        .mrow .mf { margin-bottom:0; }
+        .modal-actions { display:flex; gap:12px; justify-content:flex-end; margin-top:22px; }
+        .btn-cancel { padding:11px 24px; border-radius:50px; border:2px solid #e0e0e8; background:white; color:#555; font-weight:600; cursor:pointer; transition:all 0.2s; }
+        .btn-cancel:hover { background:#f5f5fa; }
+        .btn-save { padding:11px 28px; border-radius:50px; border:none; background:linear-gradient(135deg,var(--primary),#C94A6D); color:white; font-weight:700; cursor:pointer; transition:all 0.2s; }
+        .btn-save:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(255,107,157,0.4); }
+        .btn-save:disabled { opacity:0.6; cursor:wait; }
+
+        /* Toast */
+        .toast { position:fixed; bottom:80px; left:50%; transform:translateX(-50%) translateY(30px); background:var(--dark); color:white; padding:12px 24px; border-radius:50px; font-weight:600; font-size:14px; box-shadow:var(--shadow-lg); opacity:0; transition:all 0.3s; z-index:2000; }
+        .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+        #last-update { position:fixed; bottom:25px; left:25px; background:var(--glass-strong); backdrop-filter:blur(20px); padding:12px 20px; border-radius:50px; box-shadow:var(--shadow-lg); font-weight:600; font-size:13px; border:1px solid var(--glass-border); z-index:100; animation:fadeIn 1s ease-out 1s backwards; }
+        #last-update span { font-weight:700; color:var(--primary); }
+
+        .h60{min-height:500px;} .h40{min-height:300px;} .h20{min-height:200px;} .h80{min-height:600px;}
+
+        @media(max-width:1200px){.main-layout{grid-template-columns:1fr 1fr;}.panel.small:last-child{grid-column:1/-1;}}
+        @media(max-width:768px){.main-layout{grid-template-columns:1fr;}.top-menu ul{flex-direction:column;}.btn-admin{display:none!important;}}
+    </style>
+</head>
+<body>
+    <div class="guest-banner" id="guestBanner">
+        👁️ Vous consultez en mode <strong>invité</strong> — lecture seule.
+        <a onclick="logout()">Se connecter avec un compte →</a>
+    </div>
+
+    <div class="particles">
+        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
+        <div class="particle"></div><div class="particle"></div>
+    </div>
+
+    <div class="top-btns">
+        <button class="top-btn btn-edit" id="editBtn" onclick="toggleEdit()">✏️ Éditer</button>
+        <a class="top-btn btn-admin" id="adminBtn" href="admin.html">⚙️ Utilisateurs</a>
+        <button class="top-btn btn-logout" onclick="logout()">🚪 Déconnexion</button>
+    </div>
+
+    <div class="container">
+        <div class="page-title">
+            <h1 class="title-main">LES INFOPED</h1>
+            <p class="title-sub" id="pageSubtitle">DASHBOARD</p>
+            <span class="user-badge" id="userBadge"></span>
+        </div>
+
+        <nav class="top-menu">
+            <ul>
+                <li><a href="#medicaments">💊 MÉDICAMENTS & PROTOCOLES</a></li>
+                <li><a href="#hygiene">🦠 HYGIÈNE</a></li>
+                <li><a href="#projets">💡 PROJETS EN COURS</a></li>
+                <li><a href="#rh">👥 RH</a></li>
+                <li><a href="#divers">📋 DIVERS</a></li>
+                <li><a href="#agenda">📆 AGENDA</a></li>
+            </ul>
+        </nav>
+
+        <div class="main-layout">
+            <div class="panel large">
+                <div class="block h60 block-medicaments" id="medicaments">
+                    <h2 class="menu-title">💊 Médicaments / Protocoles</h2>
+                    <ul id="list-medicaments"></ul>
+                    <button class="add-item-row" onclick="openAddItem('medicaments')">+ Ajouter un élément</button>
+                </div>
+                <div class="block h20 block-hygiene" id="hygiene">
+                    <h2 class="menu-title">🦠 Hygiène</h2>
+                    <ul id="list-hygiene"></ul>
+                    <button class="add-item-row" onclick="openAddItem('hygiene')">+ Ajouter un élément</button>
+                </div>
+                <div class="block h20 block-divers" id="divers">
+                    <h2 class="menu-title">📋 Divers</h2>
+                    <ul id="list-divers"></ul>
+                    <button class="add-item-row" onclick="openAddItem('divers')">+ Ajouter un élément</button>
+                </div>
+            </div>
+
+            <div class="panel small">
+                <div class="block h60" id="projets">
+                    <h2 class="menu-title">💡 Projets</h2>
+                    <ul id="list-projets"></ul>
+                    <button class="add-item-row" onclick="openAddItem('projets')">+ Ajouter un élément</button>
+                </div>
+                <div class="block h40 block-rh" id="rh">
+                    <h2 class="menu-title">👥 RH</h2>
+                    <ul id="list-rh"></ul>
+                    <button class="add-item-row" onclick="openAddItem('rh')">+ Ajouter un élément</button>
+                </div>
+            </div>
+
+            <div class="panel small">
+                <div class="block h80" id="agenda">
+                    <h2 class="menu-title">📆 Agenda</h2>
+                    <div id="agenda-list"></div>
+                    <button class="add-agenda-row" onclick="openAddAgenda()">+ Ajouter un évènement</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="last-update">🕒 Dernière mise à jour : <span id="lastModified">—</span></div>
+    <div class="toast" id="toast"></div>
+
+    <!-- Modal item -->
+    <div class="modal-overlay" id="itemModal">
+        <div class="modal">
+            <h3 id="itemModalTitle">Modifier l'élément</h3>
+            <div class="mf"><label>Texte</label><textarea id="itemText" rows="3" placeholder="Texte de l'élément..."></textarea></div>
+            <div class="mf"><label>Lien (optionnel)</label><input type="url" id="itemLink" placeholder="https://..."></div>
+            <div class="mf"><label>Type</label>
+                <select id="itemType">
+                    <option value="normal">Normal</option>
+                    <option value="alert">🚨 Alerte</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('itemModal')">Annuler</button>
+                <button class="btn-save" id="itemSaveBtn" onclick="saveItem()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal agenda -->
+    <div class="modal-overlay" id="agendaModal">
+        <div class="modal">
+            <h3 id="agendaModalTitle">Ajouter un évènement</h3>
+            <div class="mrow">
+                <div class="mf"><label>Jour</label><input type="text" id="agJour" maxlength="2" placeholder="15"></div>
+                <div class="mf"><label>Mois</label><input type="text" id="agMois" maxlength="5" placeholder="MAI"></div>
+            </div>
+            <div class="mf" style="margin-top:14px"><label>Titre</label><input type="text" id="agTitre" placeholder="Titre de l'évènement"></div>
+            <div class="mf"><label>Heure</label><input type="text" id="agHeure" placeholder="14h00 - 16h00"></div>
+            <div class="mf"><label>Lieu</label><input type="text" id="agLieu" placeholder="Salle de réunion A"></div>
+            <div class="mf"><label>Participants</label><input type="text" id="agPart" placeholder="Dr. Martin, équipe..."></div>
+            <div class="modal-actions">
+                <button class="btn-cancel" onclick="closeModal('agendaModal')">Annuler</button>
+                <button class="btn-save" id="agSaveBtn" onclick="saveAgenda()">💾 Enregistrer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const API = 'api.php';
+    let currentUser = null;
+    let isEditMode = false;
+    let editingItemId = null;
+    let editingItemSection = null;
+    let editingAgendaId = null;
+
+    // ── INIT ──
+    (async function init() {
+        // Récupère l'utilisateur depuis sessionStorage ou API
+        const stored = sessionStorage.getItem('ped_user');
+        if (stored) {
+            currentUser = JSON.parse(stored);
+        }
+
+        // Pour les utilisateurs non-invités, vérifier la session PHP
+        if (!currentUser || currentUser.role !== 'guest') {
+            try {
+                const r = await fetch(`${API}/auth/me`, { credentials: 'include' });
+                if (!r.ok) { window.location.replace('login.html'); return; }
+                const d = await r.json();
+                currentUser = d.user;
+                sessionStorage.setItem('ped_user', JSON.stringify(currentUser));
+            } catch(e) {
+                window.location.replace('login.html'); return;
+            }
+        }
+
+        applyRole();
+        await loadContent();
+        await loadAgenda();
+        setSubtitle();
+    })();
+
+    function applyRole() {
+        const badge = document.getElementById('userBadge');
+        if (currentUser.role === 'guest') {
+            document.getElementById('guestBanner').style.display = 'block';
+            badge.textContent = '👁️ Mode invité';
+        } else if (currentUser.role === 'admin') {
+            badge.textContent = '👑 ' + currentUser.username + ' (Admin)';
+            document.getElementById('editBtn').style.display = 'block';
+            document.getElementById('adminBtn').style.display = 'block';
+        } else {
+            badge.textContent = '👤 ' + currentUser.username;
+        }
+    }
+
+    function setSubtitle() {
+        const months = ['JANVIER','FÉVRIER','MARS','AVRIL','MAI','JUIN','JUILLET','AOÛT','SEPTEMBRE','OCTOBRE','NOVEMBRE','DÉCEMBRE'];
+        const now = new Date();
+        document.getElementById('pageSubtitle').textContent = months[now.getMonth()] + ' ' + now.getFullYear();
+    }
+
+    // ── CHARGEMENT CONTENU ──
+    async function loadContent() {
+        try {
+            const r = await fetch(`${API}/content`, { credentials: 'include' });
+            const d = await r.json();
+            const sections = ['medicaments','hygiene','divers','projets','rh'];
+            sections.forEach(s => renderSection(s, d.items.filter(i => i.section === s)));
+            // Date de dernière modif
+            if (d.items.length) {
+                const latest = d.items.map(i => new Date(i.updated_at || 0)).sort((a,b) => b-a)[0];
+                if (!isNaN(latest)) {
+                    const opts = { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' };
+                    document.getElementById('lastModified').textContent = latest.toLocaleDateString('fr-FR', opts);
+                }
+            }
+        } catch(e) {
+            showToast('⚠️ Erreur lors du chargement du contenu');
+        }
+    }
+
+    function renderSection(section, items) {
+        const ul = document.getElementById('list-' + section);
+        ul.innerHTML = '';
+        items.forEach(item => {
+            const li = document.createElement('li');
+            if (item.type === 'alert') {
+                li.classList.add('alert');
+                li.innerHTML = `<span class="icon">🚨</span><span class="text">${escHtml(item.texte)}</span>`;
+            } else if (item.lien) {
+                li.classList.add('with-button');
+                li.innerHTML = `<span>${escHtml(item.texte)}</span><a href="${escHtml(item.lien)}" target="_blank"><button>📎</button></a>`;
+            } else {
+                li.textContent = item.texte;
+            }
+            // Boutons édition
+            const actions = document.createElement('span');
+            actions.className = 'item-actions';
+            actions.innerHTML = `
+                <button class="iact-btn iact-edit" onclick="openEditItem(${item.id},'${section}',event)" title="Modifier">✏️</button>
+                <button class="iact-btn iact-del" onclick="deleteItem(${item.id},event)" title="Supprimer">🗑️</button>`;
+            li.appendChild(actions);
+            ul.appendChild(li);
+        });
+    }
+
+    async function loadAgenda() {
+        try {
+            const r = await fetch(`${API}/agenda`, { credentials: 'include' });
+            const d = await r.json();
+            renderAgenda(d.events);
+        } catch(e) {}
+    }
+
+    function renderAgenda(events) {
+        const container = document.getElementById('agenda-list');
+        container.innerHTML = '';
+        events.forEach(ev => {
+            const div = document.createElement('div');
+            div.className = 'agenda-item';
+            div.innerHTML = `
+                <div class="agenda-header" onclick="toggleAgenda(this.closest('.agenda-item'))">
+                    <div class="agenda-date">
+                        <span class="day">${escHtml(ev.jour)}</span>
+                        <span class="month">${escHtml(ev.mois)}</span>
+                    </div>
+                    <div class="agenda-main">
+                        <div class="agenda-content">${escHtml(ev.titre)}</div>
+                        <div style="display:flex;align-items:center;gap:8px;">
+                            <span class="agenda-actions">
+                                <button class="iact-btn iact-edit" onclick="openEditAgenda(${ev.id},event)" title="Modifier">✏️</button>
+                                <button class="iact-btn iact-del" onclick="deleteAgendaItem(${ev.id},event)" title="Supprimer">🗑️</button>
+                            </span>
+                            <span class="agenda-arrow">▶</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="agenda-details"><div class="agenda-details-content">
+                    <div class="detail-row"><span class="detail-icon">🕐</span><span class="detail-label">Heure :</span><span class="detail-value">${escHtml(ev.heure)}</span></div>
+                    <div class="detail-row"><span class="detail-icon">📍</span><span class="detail-label">Lieu :</span><span class="detail-value">${escHtml(ev.lieu)}</span></div>
+                    <div class="detail-row"><span class="detail-icon">👥</span><span class="detail-label">Participants :</span><span class="detail-value">${escHtml(ev.participants)}</span></div>
+                </div></div>`;
+            container.appendChild(div);
+        });
+    }
+
+    function toggleAgenda(el) { el.classList.toggle('expanded'); }
+
+    // ── MODE ÉDITION ──
+    function toggleEdit() {
+        isEditMode = !isEditMode;
+        document.body.classList.toggle('edit-mode', isEditMode);
+        const btn = document.getElementById('editBtn');
+        btn.textContent = isEditMode ? '✅ Terminer' : '✏️ Éditer';
+        btn.classList.toggle('active', isEditMode);
+        showToast(isEditMode ? '✏️ Mode édition activé' : '✅ Édition terminée');
+    }
+
+    // ── MODALS ITEM ──
+    function openAddItem(section) {
+        editingItemId = null; editingItemSection = section;
+        document.getElementById('itemModalTitle').textContent = 'Ajouter un élément';
+        document.getElementById('itemText').value = '';
+        document.getElementById('itemLink').value = '';
+        document.getElementById('itemType').value = 'normal';
+        openModal('itemModal');
+    }
+
+    function openEditItem(id, section, e) {
+        e.stopPropagation();
+        editingItemId = id; editingItemSection = section;
+        // Récupère les données depuis l'API pour préremplir
+        fetch(`${API}/content`, { credentials: 'include' })
+            .then(r => r.json())
+            .then(d => {
+                const item = d.items.find(i => i.id == id);
+                if (!item) return;
+                document.getElementById('itemModalTitle').textContent = 'Modifier l\'élément';
+                document.getElementById('itemText').value = item.texte;
+                document.getElementById('itemLink').value = item.lien || '';
+                document.getElementById('itemType').value = item.type;
+                openModal('itemModal');
+            });
+    }
+
+    async function saveItem() {
+        const texte = document.getElementById('itemText').value.trim();
+        if (!texte) { showToast('⚠️ Le texte ne peut pas être vide'); return; }
+        const lien  = document.getElementById('itemLink').value.trim();
+        const type  = document.getElementById('itemType').value;
+        const btn   = document.getElementById('itemSaveBtn');
+        btn.disabled = true;
+
+        try {
+            let r;
+            if (editingItemId) {
+                r = await fetch(`${API}/content/${editingItemId}`, {
+                    method: 'PUT', credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ texte, lien, type })
+                });
+            } else {
+                r = await fetch(`${API}/content`, {
+                    method: 'POST', credentials: 'include',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ section: editingItemSection, texte, lien, type })
+                });
+            }
+            const d = await r.json();
+            if (r.ok) {
+                closeModal('itemModal');
+                await loadContent();
+                showToast('💾 Enregistré avec succès');
+            } else {
+                showToast('❌ ' + (d.error || 'Erreur'));
+            }
+        } catch(e) { showToast('❌ Erreur réseau'); }
+        btn.disabled = false;
+    }
+
+    async function deleteItem(id, e) {
+        e.stopPropagation();
+        if (!confirm('Supprimer cet élément ?')) return;
+        try {
+            const r = await fetch(`${API}/content/${id}`, { method: 'DELETE', credentials: 'include' });
+            if (r.ok) { await loadContent(); showToast('🗑️ Élément supprimé'); }
+            else { const d = await r.json(); showToast('❌ ' + d.error); }
+        } catch(e) { showToast('❌ Erreur réseau'); }
+    }
+
+    // ── MODALS AGENDA ──
+    function openAddAgenda() {
+        editingAgendaId = null;
+        document.getElementById('agendaModalTitle').textContent = 'Ajouter un évènement';
+        ['agJour','agMois','agTitre','agHeure','agLieu','agPart'].forEach(id => document.getElementById(id).value = '');
+        openModal('agendaModal');
+    }
+
+    function openEditAgenda(id, e) {
+        e.stopPropagation();
+        editingAgendaId = id;
+        fetch(`${API}/agenda`, { credentials: 'include' })
+            .then(r => r.json())
+            .then(d => {
+                const ev = d.events.find(e => e.id == id);
+                if (!ev) return;
+                document.getElementById('agendaModalTitle').textContent = 'Modifier l\'évènement';
+                document.getElementById('agJour').value = ev.jour;
+                document.getElementById('agMois').value = ev.mois;
+                document.getElementById('agTitre').value = ev.titre;
+                document.getElementById('agHeure').value = ev.heure;
+                document.getElementById('agLieu').value = ev.lieu;
+                document.getElementById('agPart').value = ev.participants;
+                openModal('agendaModal');
+            });
+    }
+
+    async function saveAgenda() {
+        const jour  = document.getElementById('agJour').value.trim();
+        const mois  = document.getElementById('agMois').value.trim().toUpperCase();
+        const titre = document.getElementById('agTitre').value.trim();
+        if (!jour || !mois || !titre) { showToast('⚠️ Jour, mois et titre requis'); return; }
+        const btn = document.getElementById('agSaveBtn');
+        btn.disabled = true;
+
+        const body = { jour, mois, titre, heure: document.getElementById('agHeure').value.trim(), lieu: document.getElementById('agLieu').value.trim(), participants: document.getElementById('agPart').value.trim() };
+
+        try {
+            let r;
+            if (editingAgendaId) {
+                r = await fetch(`${API}/agenda/${editingAgendaId}`, { method:'PUT', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            } else {
+                r = await fetch(`${API}/agenda`, { method:'POST', credentials:'include', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            }
+            const d = await r.json();
+            if (r.ok) { closeModal('agendaModal'); await loadAgenda(); showToast('💾 Évènement enregistré'); }
+            else { showToast('❌ ' + (d.error || 'Erreur')); }
+        } catch(e) { showToast('❌ Erreur réseau'); }
+        btn.disabled = false;
+    }
+
+    async function deleteAgendaItem(id, e) {
+        e.stopPropagation();
+        if (!confirm('Supprimer cet évènement ?')) return;
+        try {
+            const r = await fetch(`${API}/agenda/${id}`, { method:'DELETE', credentials:'include' });
+            if (r.ok) { await loadAgenda(); showToast('🗑️ Évènement supprimé'); }
+            else { const d = await r.json(); showToast('❌ ' + d.error); }
+        } catch(e) { showToast('❌ Erreur réseau'); }
+    }
+
+    // ── UTILITAIRES ──
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+        o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
+    });
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg; t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 2800);
+    }
+
+    function escHtml(s) {
+        if (!s) return '';
+        return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    async function logout() {
+        try { await fetch(`${API}/auth/logout`, { method:'POST', credentials:'include' }); } catch(e) {}
+        sessionStorage.removeItem('ped_user');
+        window.location.replace('login.html');
+    }
+    </script>
+</body>
+</html>

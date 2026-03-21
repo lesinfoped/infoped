@@ -1,0 +1,6 @@
+Idées d’évolution
+
+
+Page web consultable par le personnel de la pédiatrie depuis tout support (PC, téléphone personnel), pas uniquement au CHBA.
+Clic sur un texte ou une icône 👁️ ouvrant une fenêtre avec les détails du message.
+Possibilité d’intégrer une vidéo ou des images.
