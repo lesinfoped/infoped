@@ -518,7 +518,20 @@ async function deployToGitHub() {
     btn.disabled = false;
 }
 
-
+// ── Construit le bloc const PED_USERS = [...]; ────────
+function buildUsersBlock() {
+    const lines = ['const PED_USERS = ['];
+    users.forEach((u, i) => {
+        const comma = i < users.length - 1 ? ',' : '';
+        lines.push('    {');
+        lines.push(`        username: "${u.username}",`);
+        lines.push(`        password: "${u.password}",`);
+        lines.push(`        role: "${u.role}"`);
+        lines.push('    }' + comma);
+    });
+    lines.push('];');
+    return lines.join('\n');
+}
 
 // ══════════════════════════════════════════════════════
 //  LOG UI
