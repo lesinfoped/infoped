@@ -88,6 +88,11 @@ const PED_CONTENT = {
             texte: "Ibuprofène pédiatrique : dosages révisés — voir protocole",
             lien:  "",
             type:  "alert"
+        },
+        {
+            texte: "Ajout Ampoules Keppra IV dans chariot d'urgence",
+            lien:  "",
+            type:  "normal"
         }
     ],
 
