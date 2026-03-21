@@ -225,35 +225,14 @@
             </div>
         </div>
 
-        <!-- Config GitHub -->
+        <!-- Config GitHub — lue depuis data.js -->
         <div class="card">
-            <div class="card-title">🔑 Configuration GitHub</div>
-
-            <div class="config-status config-warn" id="configStatus">
-                ⚠️ Token non configuré
-            </div>
-
-            <span class="config-toggle" id="configToggle" onclick="toggleConfigFields()">⚙️ Configurer l'accès GitHub</span>
-
-            <div class="config-fields" id="configFields">
-                <div class="field">
-                    <label>Token GitHub (Personal Access Token)</label>
-                    <div class="pwd-wrap">
-                        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" autocomplete="off" spellcheck="false" oninput="saveConfig()">
-                        <span class="pwd-eye" onclick="toggleGhToken()">👁️</span>
-                    </div>
-                    <p class="field-hint">Permissions requises : <code style="font-size:11px;background:#f0f0f8;padding:1px 5px;border-radius:4px;color:#764ba2">repo</code> (Contents: Read & Write)</p>
-                </div>
-                <div class="field">
-                    <label>Propriétaire du dépôt (username GitHub)</label>
-                    <input type="text" id="ghOwner" placeholder="ex : votre-username" autocomplete="off" spellcheck="false" oninput="saveConfig()">
-                </div>
-                <div class="field">
-                    <label>Nom du dépôt</label>
-                    <input type="text" id="ghRepo" placeholder="ex : infoped" autocomplete="off" spellcheck="false" oninput="saveConfig()">
-                    <p class="field-hint">Ces informations sont stockées localement dans votre navigateur uniquement.</p>
-                </div>
-            </div>
+            <div class="card-title">🔑 Connexion GitHub</div>
+            <div class="config-status config-warn" id="configStatus">⚠️ Vérification…</div>
+            <p style="font-size:13px;color:#888;margin-top:12px;line-height:1.6;">
+                La configuration est lue depuis <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">data.js</code>.<br>
+                Pour modifier le token, éditez la variable <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">PED_GITHUB</code> dans ce fichier et committez.
+            </p>
         </div>
 
     </div>
@@ -294,11 +273,11 @@
                 </div>
                 <div class="step">
                     <span class="snum">4</span>
-                    <span class="stxt">Coller le token dans le champ <strong>Configuration GitHub</strong> à gauche, avec votre username et nom de dépôt</span>
+                    <span class="stxt">Dans <code>data.js</code>, remplacer <code>ghp_VOTRE_TOKEN_ICI</code> par votre token, puis <code>git commit &amp;&amp; git push</code></span>
                 </div>
                 <div class="step">
                     <span class="snum">5</span>
-                    <span class="stxt">✅ C'est tout — désormais chaque ajout/modification se déploie <strong>automatiquement</strong></span>
+                    <span class="stxt">✅ C'est tout — tous les admins sur tous les postes peuvent utiliser la page admin sans rien configurer</span>
                 </div>
             </div>
         </div>
@@ -359,54 +338,28 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ══════════════════════════════════════════════════════
-//  CONFIG GITHUB (stockée dans localStorage)
+//  CONFIG GITHUB — lue depuis data.js (PED_GITHUB)
 // ══════════════════════════════════════════════════════
-function saveConfig() {
-    const token = document.getElementById('ghToken').value.trim();
-    const owner = document.getElementById('ghOwner').value.trim();
-    const repo  = document.getElementById('ghRepo').value.trim();
-    localStorage.setItem('ped_gh_config', JSON.stringify({ token, owner, repo }));
-    updateConfigStatus(token, owner, repo);
-}
-
 function loadConfig() {
-    const raw = localStorage.getItem('ped_gh_config');
-    if (!raw) { updateConfigStatus('','',''); return; }
-    const { token, owner, repo } = JSON.parse(raw);
-    document.getElementById('ghToken').value = token || '';
-    document.getElementById('ghOwner').value = owner || '';
-    document.getElementById('ghRepo').value  = repo  || '';
-    updateConfigStatus(token, owner, repo);
-}
-
-function getConfig() {
-    const raw = localStorage.getItem('ped_gh_config');
-    return raw ? JSON.parse(raw) : { token:'', owner:'', repo:'' };
-}
-
-function updateConfigStatus(token, owner, repo) {
-    const el = document.getElementById('configStatus');
+    const { token, owner, repo } = getConfig();
+    const el     = document.getElementById('configStatus');
     const notice = document.getElementById('noticeCard');
-    if (token && owner && repo) {
-        el.className = 'config-status config-ok';
+    if (token && token !== 'ghp_VOTRE_TOKEN_ICI' && owner && repo) {
+        el.className   = 'config-status config-ok';
         el.textContent = '✅ Configuré — ' + owner + '/' + repo;
-        document.getElementById('configToggle').textContent = '⚙️ Modifier la configuration';
-        notice.style.display = 'none';
+        if (notice) notice.style.display = 'none';
     } else {
-        el.className = 'config-status config-warn';
-        el.textContent = '⚠️ Token non configuré — remplissez les champs ci-dessous';
-        notice.style.display = 'block';
+        el.className   = 'config-status config-warn';
+        el.textContent = '⚠️ Token manquant — éditez PED_GITHUB dans data.js';
+        if (notice) notice.style.display = 'block';
     }
 }
 
-function toggleConfigFields() {
-    const f = document.getElementById('configFields');
-    f.classList.toggle('open');
-}
-
-function toggleGhToken() {
-    const i = document.getElementById('ghToken');
-    i.type = i.type === 'password' ? 'text' : 'password';
+function getConfig() {
+    if (typeof PED_GITHUB !== 'undefined') {
+        return { token: PED_GITHUB.token || '', owner: PED_GITHUB.owner || '', repo: PED_GITHUB.repo || '' };
+    }
+    return { token:'', owner:'', repo:'' };
 }
 
 // ══════════════════════════════════════════════════════
