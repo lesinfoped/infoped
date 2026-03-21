@@ -36,6 +36,11 @@ const PED_USERS = [
         username: "user1",
         password: "user1",
         role: "user"
+    },
+    {
+        username: "user2",
+        password: "user2",
+        role: "user"
     }
 ];
 
