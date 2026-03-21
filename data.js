@@ -186,5 +186,5 @@ const PED_LAST_UPDATE = "21/03/2026";
 const PED_GITHUB = {
     token: "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",   // ← à remplacer
     owner: "lesinfoped",             // ← votre username GitHub
-    repo:  "infoped"                 // ← nom du dépôt
+    repo:  "infoped"                 // ← nom du dépôt a remplir
 };
