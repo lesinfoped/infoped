@@ -225,17 +225,6 @@
             </div>
         </div>
 
-        <!-- Config GitHub — lue depuis data.js (PED_GITHUB) -->
-        <div class="card">
-            <div class="card-title">🔑 Connexion GitHub</div>
-            <div class="config-status config-warn" id="configStatus">⚠️ Vérification…</div>
-            <p style="font-size:13px;color:#888;margin-top:12px;line-height:1.6;">
-                Configuration lue automatiquement depuis
-                <code style="background:#f0f0f8;padding:1px 6px;border-radius:4px;color:#764ba2">data.js</code>.
-                Aucune saisie requise.
-            </p>
-        </div>
-
     </div>
 
     <!-- ══ COLONNE DROITE ══ -->
@@ -256,33 +245,6 @@
         </div>
 
         <!-- Notice config (si token manquant) -->
-        <div class="card" id="noticeCard">
-            <div class="card-title">📖 Configuration initiale</div>
-            <div class="notice">
-                <h3>Obtenir un token GitHub (une seule fois)</h3>
-                <div class="step">
-                    <span class="snum">1</span>
-                    <span class="stxt">Aller sur <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></span>
-                </div>
-                <div class="step">
-                    <span class="snum">2</span>
-                    <span class="stxt">Donner un nom (ex: <code>infoped-admin</code>), choisir une expiration, cocher <code>repo</code></span>
-                </div>
-                <div class="step">
-                    <span class="snum">3</span>
-                    <span class="stxt">Cliquer <strong>Generate token</strong>, copier le token <code>ghp_xxx...</code></span>
-                </div>
-                <div class="step">
-                    <span class="snum">4</span>
-                    <span class="stxt">Sur GitHub → votre dépôt → <strong>Settings → Secrets → Actions → New secret</strong><br>Nom : <code>GITHUB_TOKEN</code> — GitHub le gère automatiquement, rien à faire !</span>
-                </div>
-                <div class="step">
-                    <span class="snum">5</span>
-                    <span class="stxt">Renseignez le nom du dépôt dans le champ <strong>Connexion GitHub</strong> à gauche. C'est tout — aucun token à saisir par les admins.</span>
-                </div>
-            </div>
-        </div>
-
     </div>
 </div>
 
@@ -505,7 +467,7 @@ async function deployToGitHub() {
         }
 
         updateLastLog('success', '✅', 'Envoyé sur GitHub');
-        addLog('loading', '⏳', 'Chargement… (~1 minute)');
+        addLog('loading', '⏳', 'GitHub Pages redéploie… (~1 minute)');
         await wait(65000);
         updateLastLog('success', '🎉', 'Site mis à jour !');
         showToast('🎉 Utilisateurs déployés avec succès !');
