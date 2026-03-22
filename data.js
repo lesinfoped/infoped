@@ -55,76 +55,143 @@ const PED_CONTENT = {
 
     medicaments: [
         {
-            texte: "Protocole Doliprane mis à jour",
-            lien:  "",
-            type:  "normal"
+            texte:     "Protocole Doliprane mis à jour",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         },
         {
-            texte: "Amoxicilline — nouvelle posologie pédiatrique",
-            lien:  "",
-            type:  "normal"
+            texte:     "Amoxicilline — nouvelle posologie pédiatrique",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         },
         {
-            texte: "Ibuprofène pédiatrique : dosages révisés — voir protocole",
-            lien:  "",
-            type:  "alert"
+            texte:     "Ibuprofène pédiatrique : dosages révisés — voir protocole",
+            lien:      "",
+            type:      "alert",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ],
 
     hygiene: [
         {
-            texte: "Informations et rappels liés à l'hygiène",
-            lien:  "",
-            type:  "normal"
+            texte:     "Informations et rappels liés à l'hygiène",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         },
         {
-            texte: "Protocoles de désinfection mis à jour",
-            lien:  "",
-            type:  "normal"
+            texte:     "Protocoles de désinfection mis à jour",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ],
 
     divers: [
         {
-            texte: "Ne plus préparer le dossier bleu (géré par le secrétariat)",
-            lien:  "",
-            type:  "normal"
+            texte:     "Ne plus préparer le dossier bleu (géré par le secrétariat)",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ],
 
     projets: [
         {
-            texte: "Projets en cours de développement",
-            lien:  "",
-            type:  "normal"
+            texte:     "Projets en cours de développement",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         },
         {
-            texte: "Nouvelles initiatives du service",
-            lien:  "",
-            type:  "normal"
+            texte:     "Nouvelles initiatives du service",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ],
 
     rh: [
         {
-            texte: "Informations ressources humaines",
-            lien:  "",
-            type:  "normal"
+            texte:     "Informations ressources humaines",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         },
         {
-            texte: "PDE : Vous pouvez consulter votre planning du mois d'Avril à partir du 03/03",
-            lien:  "",
-            type:  "alert"
+            texte:     "PDE : Vous pouvez consulter votre planning du mois d'Avril à partir du 03/03",
+            lien:      "",
+            type:      "alert",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ],
 
     evenements: [
         {
-            texte: "Évènements à venir",
-            lien:  "",
-            type:  "normal"
+            texte:     "Évènements à venir prochainement",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "#667eea",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
         }
     ]
+
 };
 
 /**
@@ -182,7 +249,7 @@ const PED_AGENDA = [
  *  Format : "JJ/MM/AAAA"  ou texte libre
  */
 
-const PED_LAST_UPDATE = "21/03/2026";
+const PED_LAST_UPDATE = "22/03/2026";
 
 /**
  * ──────────────────────────────────────────────
