@@ -142,6 +142,8 @@
             .main-inner{padding:20px 16px 60px;}
             #last-update{left:80px;}
         }
+        /* ── Titre de bloc ── */
+        .block-title { font-family:'Sora',sans-serif; font-size:16px; font-weight:700; color:var(--text); margin-bottom:14px; }
     </style>
 </head>
 <body>
@@ -194,12 +196,33 @@
                 </div>
             </div>
 
-            <div class="content-card">
+            <!-- Bloc Médicaments -->
+            <div class="content-card" style="margin-bottom:20px">
                 <div class="card-stripe" style="background:linear-gradient(90deg,#FF6B9D,#FFB4D6)"></div>
                 <div class="card-inner">
+                    <div class="block-title">💊 Médicaments</div>
+                    <button class="add-btn" id="addItemBtn-med" style="display:none" onclick="pedOpenAddItem('medicaments_med')">+ Ajouter un élément</button>
+                    <ul class="item-list" id="list-medicaments_med"></ul>
+                </div>
+            </div>
 
-            <button class="add-btn" id="addItemBtn" style="display:none" onclick="pedOpenAddItem('medicaments')">+ Ajouter un élément</button>
-            <ul class="item-list" id="list-medicaments"></ul>
+            <!-- Bloc Dispositifs Médicaux -->
+            <div class="content-card" style="margin-bottom:20px">
+                <div class="card-stripe" style="background:linear-gradient(90deg,#667eea,#93c5fd)"></div>
+                <div class="card-inner">
+                    <div class="block-title">🩺 Dispositifs Médicaux</div>
+                    <button class="add-btn" id="addItemBtn-dm" style="display:none" onclick="pedOpenAddItem('medicaments_dm')">+ Ajouter un élément</button>
+                    <ul class="item-list" id="list-medicaments_dm"></ul>
+                </div>
+            </div>
+
+            <!-- Bloc Protocoles -->
+            <div class="content-card">
+                <div class="card-stripe" style="background:linear-gradient(90deg,#4ECDC4,#a8f0e8)"></div>
+                <div class="card-inner">
+                    <div class="block-title">📋 Protocoles</div>
+                    <button class="add-btn" id="addItemBtn-protocoles" style="display:none" onclick="pedOpenAddItem('medicaments_protocoles')">+ Ajouter un élément</button>
+                    <ul class="item-list" id="list-medicaments_protocoles"></ul>
                 </div>
             </div>
         </div>
@@ -232,35 +255,42 @@
         }
 
         localContent = JSON.parse(JSON.stringify(PED_CONTENT));
-        if (!localContent.evenements)       localContent.evenements = [];
-        if (!localContent.hygiene)           localContent.hygiene = [];
-        if (!localContent.hygiene_htc)      localContent.hygiene_htc = [];
-        if (!localContent.hygiene_urgence)  localContent.hygiene_urgence = [];
-        if (!localContent.hygiene_pedopsy)  localContent.hygiene_pedopsy = [];
-        localAgenda  = JSON.parse(JSON.stringify(PED_AGENDA || []));
+        if (!localContent.evenements)             localContent.evenements = [];
+        if (!localContent.hygiene)                localContent.hygiene = [];
+        if (!localContent.hygiene_htc)            localContent.hygiene_htc = [];
+        if (!localContent.hygiene_urgence)        localContent.hygiene_urgence = [];
+        if (!localContent.hygiene_pedopsy)        localContent.hygiene_pedopsy = [];
+        if (!localContent.medicaments_med)        localContent.medicaments_med = [];
+        if (!localContent.medicaments_dm)         localContent.medicaments_dm = [];
+        if (!localContent.medicaments_protocoles) localContent.medicaments_protocoles = [];
+        localAgenda = JSON.parse(JSON.stringify(PED_AGENDA || []));
         pedInitEdit(localContent, localAgenda, renderPage);
         renderPage();
 
-        // Compteur
-        const cnt = (localContent["medicaments"]||[]).length; document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
+        // Compteur total
+        const cnt = (localContent.medicaments_med||[]).length + (localContent.medicaments_dm||[]).length + (localContent.medicaments_protocoles||[]).length;
+        document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
     });
 
     function renderPage() {
         const isAdmin = currentUser.role === 'admin' && isEditMode;
-        pedRenderSection('list-medicaments', localContent['medicaments']||[], isAdmin, 'medicaments', null);
+        pedRenderSection('list-medicaments_med',        localContent['medicaments_med']||[],        isAdmin, 'medicaments_med',        null);
+        pedRenderSection('list-medicaments_dm',         localContent['medicaments_dm']||[],         isAdmin, 'medicaments_dm',         null);
+        pedRenderSection('list-medicaments_protocoles', localContent['medicaments_protocoles']||[], isAdmin, 'medicaments_protocoles', null);
     }
 
     function toggleEdit() {
         isEditMode = !isEditMode;
         document.body.classList.toggle('edit-mode', isEditMode);
-        const lbl  = isEditMode ? '✅ Terminer' : '✏️ Mode édition';
         const lbl2 = isEditMode ? '✅ Terminer' : 'Mode édition';
         document.getElementById('editBtn').classList.toggle('active', isEditMode);
         document.getElementById('editBtnTop').classList.toggle('active', isEditMode);
         document.getElementById('editBtnLabel').textContent    = lbl2;
         document.getElementById('editBtnTopLabel').textContent = lbl2;
-        const addBtn = document.getElementById('addItemBtn') || document.getElementById('addAgendaBtn');
-        if (addBtn) addBtn.style.display = isEditMode ? 'block' : 'none';
+        ['med','dm','protocoles'].forEach(t => {
+            const b = document.getElementById('addItemBtn-' + t);
+            if (b) b.style.display = isEditMode ? 'block' : 'none';
+        });
         renderPage();
         if (isEditMode) pedToast('✏️ Mode édition activé');
     }

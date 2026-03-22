@@ -169,6 +169,61 @@ const PED_CONTENT = {
 
     divers: [
         {
+            texte:     "HEMOVIGILANCE : Vigilance concernant les étiquettes des culots à bien coller sur les deux feuilles. Bien retourner suite aux transfusions la fiche navette et la feuille de délivrance à l’hémovigilance.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Les étiquettes patients sont regroupées dans deux classeurs (nourrissons et grands-enfants) et rangés dans le bureau IDE. Les autorisations de soins, courrier du médecin, fiche SAMU, contrat ado, etc. sont à laisser dans la pochette kraft dans la PAC et à ranger dans le bureau médical. Pour des raisons d’hygiène les classeurs de protocoles (Diabète, PCA, etc.) seront rangés dans le bureau IDE.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Mémo téléphonique du service (format poche) à récupérer dans le bureau IDE.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "En cas d'AES *Accident d'Exposition au Sang*, Maintien des bons de laboratoire L1, pour les patients exposés (professionnels). Ils sont rangés avec le matériel de laboratoire aux urgences et en pédiatrie",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Depuis février 2026, le staff ados du jeudi midi, a lieu en salle de réunion de pédiatrie",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
             texte:     "Ne plus préparer le dossier bleu (géré par le secrétariat)",
             lien:      "",
             type:      "normal",
@@ -178,7 +233,7 @@ const PED_CONTENT = {
             bold:      false,
             italic:    false,
             under:     false
-        }
+        },
     ],
 
     projets: [

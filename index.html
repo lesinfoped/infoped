@@ -509,11 +509,20 @@
         if (isAdmin) document.getElementById('adminBtn').style.display = 'flex';
 
         // Sections simples
-        ['medicaments','projets','rh','divers','evenements'].forEach(s => {
+        ['projets','rh','divers','evenements'].forEach(s => {
             const items = (PED_CONTENT[s]||[]);
             document.getElementById('count-'+s).textContent = items.length + ' élément' + (items.length > 1 ? 's' : '');
             renderCardList('list-'+s, items.slice(0,3));
         });
+
+        // Thérapeutique — combinaison des 3 sous-sections
+        const medItems = [
+            ...(PED_CONTENT.medicaments_med||[]),
+            ...(PED_CONTENT.medicaments_dm||[]),
+            ...(PED_CONTENT.medicaments_protocoles||[])
+        ];
+        document.getElementById('count-medicaments').textContent = medItems.length + ' élément' + (medItems.length > 1 ? 's' : '');
+        renderCardList('list-medicaments', medItems.slice(0,3));
 
         // Organisation & Pratique (combinaison des 3 sous-sections)
         const hygItems = [

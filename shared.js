@@ -131,7 +131,7 @@ async function pedDeploy(localContent, localAgenda, onStart, onEnd) {
 
 // ── Sérialiseurs ──────────────────────────────────────
 function pedBuildContentBlock(lc) {
-    const sections = ['medicaments','hygiene_htc','hygiene_urgence','hygiene_pedopsy','hygiene','divers','projets','rh','evenements'];
+    const sections = ['medicaments_med','medicaments_dm','medicaments_protocoles','hygiene_htc','hygiene_urgence','hygiene_pedopsy','hygiene','divers','projets','rh','evenements'];
     let out = 'const PED_CONTENT = {\n\n';
     sections.forEach((s,si) => {
         out += '    '+s+': [\n';
