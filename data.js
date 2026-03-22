@@ -31,31 +31,6 @@ const PED_USERS = [
         username: "user0",
         password: "ped2026",
         role: "user"
-    },
-    {
-        username: "user1",
-        password: "user1",
-        role: "user"
-    },
-    {
-        username: "user2",
-        password: "user2",
-        role: "user"
-    },
-    {
-        username: "sosolastreet",
-        password: "123456",
-        role: "admin"
-    },
-    {
-        username: "folichon",
-        password: "folichon213",
-        role: "user"
-    },
-    {
-        username: "martin",
-        password: "bidul",
-        role: "user"
     }
 ];
 
@@ -75,140 +50,76 @@ const PED_CONTENT = {
 
     medicaments: [
         {
-            texte:     "Texte 2026",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "#FFE66D",
-            bold:      true,
-            italic:    true,
-            under:     true
+            texte: "Protocole Doliprane mis à jour",
+            lien:  "",
+            type:  "normal"
         },
         {
-            texte:     "Protocole Doliprane mis à jour",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Amoxicilline — nouvelle posologie pédiatrique",
+            lien:  "",
+            type:  "normal"
         },
         {
-            texte:     "Amoxicilline — nouvelle posologie pédiatrique",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
-        },
-        {
-            texte:     "Ibuprofène pédiatrique : dosages révisés — voir protocole",
-            lien:      "",
-            type:      "alert",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Ibuprofène pédiatrique : dosages révisés — voir protocole",
+            lien:  "",
+            type:  "alert"
         }
     ],
 
     hygiene: [
         {
-            texte:     "Informations et rappels liés à l'hygiène",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Informations et rappels liés à l'hygiène",
+            lien:  "",
+            type:  "normal"
         },
         {
-            texte:     "Protocoles de désinfection mis à jour",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Protocoles de désinfection mis à jour",
+            lien:  "",
+            type:  "normal"
         }
     ],
 
     divers: [
         {
-            texte:     "Ne plus préparer le dossier bleu (géré par le secrétariat)",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Ne plus préparer le dossier bleu (géré par le secrétariat)",
+            lien:  "",
+            type:  "normal"
         }
     ],
 
     projets: [
         {
-            texte:     "Projets en cours de développement",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Projets en cours de développement",
+            lien:  "",
+            type:  "normal"
         },
         {
-            texte:     "Nouvelles initiatives du service",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Nouvelles initiatives du service",
+            lien:  "",
+            type:  "normal"
         }
     ],
 
     rh: [
         {
-            texte:     "Informations ressources humaines",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "Informations ressources humaines",
+            lien:  "",
+            type:  "normal"
         },
         {
-            texte:     "PDE : Vous pouvez consulter votre planning du mois d'Avril à partir du 03/03",
-            lien:      "",
-            type:      "alert",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
+            texte: "PDE : Vous pouvez consulter votre planning du mois d'Avril à partir du 03/03",
+            lien:  "",
+            type:  "alert"
+        }
+    ],
+
+    evenements: [
+        {
+            texte: "Évènements à venir",
+            lien:  "",
+            type:  "normal"
         }
     ]
-
 };
 
 /**
@@ -266,7 +177,7 @@ const PED_AGENDA = [
  *  Format : "JJ/MM/AAAA"  ou texte libre
  */
 
-const PED_LAST_UPDATE = "22/03/2026";
+const PED_LAST_UPDATE = "21/03/2026";
 
 /**
  * ──────────────────────────────────────────────
@@ -283,9 +194,9 @@ const PED_LAST_UPDATE = "22/03/2026";
 // Le token est découpé en 3 parties pour éviter la détection automatique de GitHub.
 // Remplacez T1, T2, T3 par les 3 parties de votre token ghp_XXXX (découpez-le en 3 morceaux égaux).
 // Exemple : "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456" → T1="ghp_AbCdEf", T2="GhIjKlMn", T3="OpQrStUvWxYz123456"
-const _t1 = "ghp_I0nDJVdUvNZwP";
-const _t2 = "BG0CtP6wNKG";
-const _t3 = "KAwmEN0NDBcw";
+const _t1 = "PARTIE_1";
+const _t2 = "PARTIE_2";
+const _t3 = "PARTIE_3";
 
 const PED_GITHUB = {
     token: _t1 + _t2 + _t3,
