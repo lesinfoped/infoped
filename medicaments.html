@@ -157,15 +157,14 @@
         </div>
         <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
             <a href="medicaments.html" class="nav-item active"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
-            <a href="hygiene.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
-            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="organisation.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
             <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
+            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="divers.html" class="nav-item"><span class="nav-icon">📁</span><span>Administratif &amp; Divers</span></a>
             <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
-            <a href="divers.html" class="nav-item"><span class="nav-icon">📋</span><span>Divers</span></a>
-            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
             <a href="evenements.html" class="nav-item"><span class="nav-icon">🎉</span><span>Évènements</span></a>
+            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
         </nav>
         <div class="sidebar-bottom">
             <div class="user-card">
@@ -269,7 +268,7 @@
 
         // Compteur total
         const cnt = (localContent.medicaments_med||[]).length + (localContent.medicaments_dm||[]).length + (localContent.medicaments_protocoles||[]).length;
-        document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
+        document.getElementById("pageCount").textContent = cnt + " information" + (cnt > 1 ? "s" : "");
     });
 
     function renderPage() {

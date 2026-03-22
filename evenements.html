@@ -86,7 +86,6 @@
         .alert-item{background:rgba(255,107,157,0.06);border-left:3px solid var(--primary);padding:12px 16px 12px 14px !important;border-radius:8px;margin:6px 0;display:flex;align-items:center;gap:10px;}
         .alert-item::before{display:none;}
         .alert-item .icon{font-size:18px;flex-shrink:0;}
-        .alert-item .text{font-weight:600;font-size:14px;color:var(--primary-dark);}
 
         /* Agenda */
         .agenda-list{display:flex;flex-direction:column;gap:10px;}
@@ -156,14 +155,14 @@
         </div>
         <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
-            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
-            <a href="medicaments.html" class="nav-item"><span class="nav-icon">💊</span><span>Médicaments</span></a>
-            <a href="hygiene.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="therapeutique.html" class="nav-item"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
+            <a href="organisation.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
             <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
+            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="divers.html" class="nav-item"><span class="nav-icon">📁</span><span>Administratif &amp; Divers</span></a>
             <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
-            <a href="divers.html" class="nav-item"><span class="nav-icon">📋</span><span>Divers</span></a>
-            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
             <a href="evenements.html" class="nav-item active"><span class="nav-icon">🎉</span><span>Évènements</span></a>
+            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
         </nav>
         <div class="sidebar-bottom">
             <div class="user-card">
@@ -232,13 +231,20 @@
         }
 
         localContent = JSON.parse(JSON.stringify(PED_CONTENT));
-        if (!localContent.evenements) localContent.evenements = [];
+        if (!localContent.evenements)       localContent.evenements = [];
+        if (!localContent.hygiene)           localContent.hygiene = [];
+        if (!localContent.medicaments_med)        localContent.medicaments_med = [];
+        if (!localContent.medicaments_dm)         localContent.medicaments_dm = [];
+        if (!localContent.medicaments_protocoles) localContent.medicaments_protocoles = [];
+        if (!localContent.hygiene_htc)      localContent.hygiene_htc = [];
+        if (!localContent.hygiene_urgence)  localContent.hygiene_urgence = [];
+        if (!localContent.hygiene_pedopsy)  localContent.hygiene_pedopsy = [];
         localAgenda  = JSON.parse(JSON.stringify(PED_AGENDA || []));
         pedInitEdit(localContent, localAgenda, renderPage);
         renderPage();
 
         // Compteur
-        const cnt = (localContent["evenements"]||[]).length; document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
+        const cnt = (localContent["evenements"]||[]).length; document.getElementById("pageCount").textContent = cnt + " information" + (cnt > 1 ? "s" : "");
     });
 
     function renderPage() {

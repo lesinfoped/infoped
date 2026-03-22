@@ -324,15 +324,14 @@
 
         <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
-            <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span><span>Accueil</span></a>
-            <a class="nav-item" href="medicaments.html"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
-            <a class="nav-item" href="hygiene.html"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
-            <a class="nav-item" href="hygiene2.html"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
-            <a class="nav-item" href="projets.html"><span class="nav-icon">💡</span><span>Projets</span></a>
-            <a class="nav-item" href="rh.html"><span class="nav-icon">👥</span><span>RH</span></a>
-            <a class="nav-item" href="divers.html"><span class="nav-icon">📋</span><span>Divers</span></a>
-            <a class="nav-item" href="agenda.html"><span class="nav-icon">📆</span><span>Agenda</span></a>
-            <a class="nav-item" href="evenements.html"><span class="nav-icon">🎉</span><span>Évènements</span></a>
+            <a href="therapeutique.html" class="nav-item"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
+            <a href="organisation.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
+            <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
+            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="divers.html" class="nav-item"><span class="nav-icon">📁</span><span>Administratif &amp; Divers</span></a>
+            <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
+            <a href="evenements.html" class="nav-item"><span class="nav-icon">🎉</span><span>Évènements</span></a>
+            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
         </nav>
 
         <div class="sidebar-bottom">
@@ -375,7 +374,7 @@
                 <a onclick="pedLogout()">Se connecter →</a>
             </div>
 
-            <!-- Grille layout : 3 cols, agenda s'étend lignes 2+3 -->
+            <!-- Grille layout réorganisée -->
             <div class="cards-grid-v2">
 
                 <!-- L1C1 : Thérapeutique -->
@@ -386,7 +385,7 @@
                             <div class="card-icon ci-pink">💊</div>
                             <div><div class="card-title">Thérapeutique</div><div class="card-count" id="count-medicaments">—</div></div>
                         </div>
-                        <a class="card-link" href="medicaments.html">Voir plus →</a>
+                        <a class="card-link" href="therapeutique.html">Voir plus →</a>
                     </div>
                     <div class="card-body"><ul class="card-list" id="list-medicaments"></ul></div>
                 </div>
@@ -397,11 +396,11 @@
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ci-purple">📌</div>
-                            <div><div class="card-title">Organisation &amp; Pratique</div><div class="card-count" id="count-hygiene">—</div></div>
+                            <div><div class="card-title">Organisation &amp; Pratique</div><div class="card-count" id="count-orgpratique">—</div></div>
                         </div>
-                        <a class="card-link" href="hygiene.html">Voir plus →</a>
+                        <a class="card-link" href="organisation.html">Voir plus →</a>
                     </div>
-                    <div class="card-body"><ul class="card-list" id="list-hygiene"></ul></div>
+                    <div class="card-body"><ul class="card-list" id="list-orgpratique"></ul></div>
                 </div>
 
                 <!-- L1C3 : Projets -->
@@ -417,7 +416,7 @@
                     <div class="card-body"><ul class="card-list" id="list-projets"></ul></div>
                 </div>
 
-                <!-- L2C1 : Hygiène (section indépendante) -->
+                <!-- L2C1 : Hygiène -->
                 <div class="section-card">
                     <div class="card-stripe stripe-teal"></div>
                     <div class="card-header">
@@ -430,20 +429,20 @@
                     <div class="card-body"><ul class="card-list" id="list-hygiene2"></ul></div>
                 </div>
 
-                <!-- L2C2 : Divers -->
+                <!-- L2C2 : Administratif & Divers -->
                 <div class="section-card">
                     <div class="card-stripe stripe-blue"></div>
                     <div class="card-header">
                         <div class="card-header-left">
-                            <div class="card-icon ci-blue">📋</div>
-                            <div><div class="card-title">Administratif & Divers</div><div class="card-count" id="count-divers">—</div></div>
+                            <div class="card-icon ci-blue">📁</div>
+                            <div><div class="card-title">Administratif &amp; Divers</div><div class="card-count" id="count-divers">—</div></div>
                         </div>
                         <a class="card-link" href="divers.html">Voir plus →</a>
                     </div>
                     <div class="card-body"><ul class="card-list" id="list-divers"></ul></div>
                 </div>
 
-                <!-- L2-3 C3 : Agenda (s'étend sur 2 lignes) -->
+                <!-- L2+3 C3 : Agenda (s'étend sur 2 lignes) -->
                 <div class="section-card agenda-tall">
                     <div class="card-stripe stripe-pink"></div>
                     <div class="card-header">
@@ -481,6 +480,7 @@
                     </div>
                     <div class="card-body"><ul class="card-list" id="list-evenements"></ul></div>
                 </div>
+
             </div>
 
         </div>
@@ -530,8 +530,8 @@
             ...(PED_CONTENT.hygiene_urgence||[]),
             ...(PED_CONTENT.hygiene_pedopsy||[])
         ];
-        document.getElementById('count-hygiene').textContent = hygItems.length + ' information' + (hygItems.length > 1 ? 's' : '');
-        renderCardList('list-hygiene', hygItems.slice(0,3));
+        document.getElementById('count-orgpratique').textContent = hygItems.length + ' information' + (hygItems.length > 1 ? 's' : '');
+        renderCardList('list-orgpratique', hygItems.slice(0,3));
 
         // Hygiène — section indépendante
         const hygItems2 = (PED_CONTENT.hygiene||[]);
@@ -540,12 +540,19 @@
 
         // Agenda
         const events = (PED_AGENDA||[]);
-        document.getElementById('count-agenda').textContent = events.length + ' information' + (events.length > 1 ? 's' : '');
+        document.getElementById('count-agenda').textContent = events.length + ' évènement' + (events.length > 1 ? 's' : '');
+        const MOIS = {'JAN':1,'FÉV':2,'FEV':2,'MAR':3,'AVR':4,'MAI':5,'JUI':6,'JUL':7,'AOU':8,'AOÛ':8,'SEP':9,'OCT':10,'NOV':11,'DÉC':12,'DEC':12};
+        const sortedEvents = [...events].sort((a,b) => {
+            const ma = MOIS[a.mois?.toUpperCase()?.substring(0,3)]||0;
+            const mb = MOIS[b.mois?.toUpperCase()?.substring(0,3)]||0;
+            if (mb !== ma) return mb - ma;
+            return parseInt(b.jour||0) - parseInt(a.jour||0);
+        });
         const agContainer = document.getElementById('agenda-apercu');
-        if (!events.length) {
+        if (!sortedEvents.length) {
             agContainer.innerHTML = '<p class="empty-state">Aucun évènement à venir</p>';
         } else {
-            events.slice(0,6).forEach(ev => {
+            sortedEvents.slice(0,6).forEach(ev => {
                 const a = document.createElement('a');
                 a.className = 'ag-item-compact'; a.href = 'agenda.html';
                 a.innerHTML = `

@@ -72,6 +72,16 @@ function pedRenderSection(ulId, items, isAdmin, sectionKey, limit) {
 }
 
 // ── Rendu agenda ──────────────────────────────────────
+const MOIS_MAP = {'JAN':1,'FÉV':2,'FEV':2,'MAR':3,'AVR':4,'MAI':5,'JUI':6,'JUL':7,'AOU':8,'AOÛ':8,'SEP':9,'OCT':10,'NOV':11,'DÉC':12,'DEC':12};
+function pedSortAgenda(events) {
+    return [...events].sort((a, b) => {
+        const ma = MOIS_MAP[a.mois?.toUpperCase()?.substring(0,3)] || 0;
+        const mb = MOIS_MAP[b.mois?.toUpperCase()?.substring(0,3)] || 0;
+        if (mb !== ma) return mb - ma;
+        return parseInt(b.jour||0) - parseInt(a.jour||0);
+    });
+}
+
 function pedRenderAgenda(containerId, events, isAdmin) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -80,7 +90,10 @@ function pedRenderAgenda(containerId, events, isAdmin) {
         container.innerHTML = '<p style="color:#888;font-size:14px">Aucun évènement à venir</p>';
         return;
     }
-    events.forEach((ev, idx) => {
+    const sorted = pedSortAgenda(events);
+    sorted.forEach((ev, idx) => {
+        // Find original index for edit/delete actions
+        const origIdx = events.indexOf(ev);
         const div = document.createElement('div');
         div.className = 'agenda-item';
         div.innerHTML =
@@ -89,7 +102,7 @@ function pedRenderAgenda(containerId, events, isAdmin) {
           +   '<div class="agenda-main">'
           +     '<div class="agenda-content">'+pedEsc(ev.titre)+'</div>'
           +     '<div style="display:flex;align-items:center;gap:8px;">'
-          +       (isAdmin ? '<span class="agenda-edit-btns"><button class="eact eact-e" onclick="pedOpenEditAgenda('+idx+',event)">✏️</button><button class="eact eact-d" onclick="pedDeleteAgenda('+idx+',event)">🗑️</button></span>' : '')
+          +       (isAdmin ? '<span class="agenda-edit-btns"><button class="eact eact-e" onclick="pedOpenEditAgenda('+origIdx+',event)">✏️</button><button class="eact eact-d" onclick="pedDeleteAgenda('+origIdx+',event)">🗑️</button></span>' : '')
           +       '<span class="agenda-arrow">▶</span>'
           +     '</div>'
           +   '</div>'
