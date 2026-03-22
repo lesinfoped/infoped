@@ -436,7 +436,7 @@
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ci-blue">📋</div>
-                            <div><div class="card-title">Divers</div><div class="card-count" id="count-divers">—</div></div>
+                            <div><div class="card-title">Administratif & Divers</div><div class="card-count" id="count-divers">—</div></div>
                         </div>
                         <a class="card-link" href="divers.html">Voir plus →</a>
                     </div>
@@ -511,7 +511,7 @@
         // Sections simples
         ['projets','rh','divers','evenements'].forEach(s => {
             const items = (PED_CONTENT[s]||[]);
-            document.getElementById('count-'+s).textContent = items.length + ' élément' + (items.length > 1 ? 's' : '');
+            document.getElementById('count-'+s).textContent = items.length + ' information' + (items.length > 1 ? 's' : '');
             renderCardList('list-'+s, items.slice(0,3));
         });
 
@@ -521,7 +521,7 @@
             ...(PED_CONTENT.medicaments_dm||[]),
             ...(PED_CONTENT.medicaments_protocoles||[])
         ];
-        document.getElementById('count-medicaments').textContent = medItems.length + ' élément' + (medItems.length > 1 ? 's' : '');
+        document.getElementById('count-medicaments').textContent = medItems.length + ' information' + (medItems.length > 1 ? 's' : '');
         renderCardList('list-medicaments', medItems.slice(0,3));
 
         // Organisation & Pratique (combinaison des 3 sous-sections)
@@ -530,17 +530,17 @@
             ...(PED_CONTENT.hygiene_urgence||[]),
             ...(PED_CONTENT.hygiene_pedopsy||[])
         ];
-        document.getElementById('count-hygiene').textContent = hygItems.length + ' élément' + (hygItems.length > 1 ? 's' : '');
+        document.getElementById('count-hygiene').textContent = hygItems.length + ' information' + (hygItems.length > 1 ? 's' : '');
         renderCardList('list-hygiene', hygItems.slice(0,3));
 
         // Hygiène — section indépendante
         const hygItems2 = (PED_CONTENT.hygiene||[]);
-        document.getElementById('count-hygiene2').textContent = hygItems2.length + ' élément' + (hygItems2.length > 1 ? 's' : '');
+        document.getElementById('count-hygiene2').textContent = hygItems2.length + ' information' + (hygItems2.length > 1 ? 's' : '');
         renderCardList('list-hygiene2', hygItems2.slice(0,3));
 
         // Agenda
         const events = (PED_AGENDA||[]);
-        document.getElementById('count-agenda').textContent = events.length + ' évènement' + (events.length > 1 ? 's' : '');
+        document.getElementById('count-agenda').textContent = events.length + ' information' + (events.length > 1 ? 's' : '');
         const agContainer = document.getElementById('agenda-apercu');
         if (!events.length) {
             agContainer.innerHTML = '<p class="empty-state">Aucun évènement à venir</p>';

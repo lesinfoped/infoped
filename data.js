@@ -53,7 +53,21 @@ const PED_USERS = [
 
 const PED_CONTENT = {
 
-    medicaments: [
+    medicaments_med: [
+        {
+            texte:     "Ajout d'ATB IV dans la pharmacie des URGENCES PED : Metronidazole, Aciclovir, Augmentin 500mg.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        }
+    ],
+
+    medicaments_dm: [
         {
             texte:     "TUBULURE SPIRALE : toujours en test dans le service, pour les patients d’onco-hémato, drépanocytaires ou ayant une antibiothérapie au long cours. \nFeuille d’évaluation produit à remplir à chaque utilisation avant la mise en place définitive et à remettre à la cadre.",
             lien:      "",
@@ -75,18 +89,10 @@ const PED_CONTENT = {
             bold:      false,
             italic:    false,
             under:     false
-        },
-        {
-            texte:     "Ajout d'ATB IV dans la pharmacie des URGENCES PED : Metronidazole, Aciclovir, Augmentin 500mg.",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
-        },
+        }
+    ],
+
+    medicaments_protocoles: [
         {
             texte:     "AEROSOL : à mettre sous Air si sat>94% et sous O2 si sat<94%",
             lien:      "",
@@ -233,7 +239,7 @@ const PED_CONTENT = {
             bold:      false,
             italic:    false,
             under:     false
-        },
+        }
     ],
 
     projets: [
@@ -409,7 +415,7 @@ const PED_AGENDA = [
  *  Format : "JJ/MM/AAAA"  ou texte libre
  */
 
-const PED_LAST_UPDATE = "22/03/2026";
+const PED_LAST_UPDATE = "23/03/2026";
 
 /**
  * ──────────────────────────────────────────────
