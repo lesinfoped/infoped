@@ -467,7 +467,7 @@ async function deployToGitHub() {
         }
 
         updateLastLog('success', '✅', 'Envoyé sur GitHub');
-        addLog('loading', '⏳', 'GitHub Pages redéploie… (~1 minute)');
+        addLog('loading', '⏳', 'Compte en cours d\'activation… (~1 minute)');
         await wait(65000);
         updateLastLog('success', '🎉', 'Site mis à jour !');
         showToast('🎉 Utilisateurs déployés avec succès !');
