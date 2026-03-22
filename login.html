@@ -3,165 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Info PED</title>
+    <title>Info PED – Connexion</title>
 
     <script>
-        // Redirection si déjà connecté
         (function() {
             const s = sessionStorage.getItem('ped_user');
-            if (s) {
-                const u = JSON.parse(s);
-                if (u && u.role !== 'guest') window.location.replace('index.html');
-            }
+            if (s) { const u = JSON.parse(s); if (u && u.role !== 'guest') window.location.replace('index.html'); }
         })();
     </script>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
-        :root { --primary:#FF6B9D; --shadow-lg:0 25px 60px rgba(0,0,0,0.35); }
+        :root {
+            --primary: #FF6B9D;
+            --primary-dark: #C94A6D;
+            --accent: #764ba2;
+            --accent2: #667eea;
+            --text: #1a1a2e;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --bg: #f8f9fc;
+        }
         * { margin:0; padding:0; box-sizing:border-box; }
 
-        @keyframes float{0%,100%{transform:translateY(0) rotate(0);}50%{transform:translateY(-30px) rotate(5deg);}}
-        @keyframes fadeInScale{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
-        @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-10px);}75%{transform:translateX(10px);}}
-        @keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+        @keyframes fadeInLeft  { from{opacity:0;transform:translateX(-24px);} to{opacity:1;transform:translateX(0);} }
+        @keyframes fadeInRight { from{opacity:0;transform:translateX(24px);}  to{opacity:1;transform:translateX(0);} }
+        @keyframes fadeInUp    { from{opacity:0;transform:translateY(16px);}  to{opacity:1;transform:translateY(0);} }
+        @keyframes shake       { 0%,100%{transform:translateX(0);} 25%{transform:translateX(-8px);} 75%{transform:translateX(8px);} }
+        @keyframes pulse       { 0%,100%{opacity:1;} 50%{opacity:.6;} }
+        @keyframes float       { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+
+        html, body { height:100%; }
 
         body {
-            font-family:'DM Sans',sans-serif; min-height:100vh;
-            background:url("img/imgback3.jpeg") center/cover no-repeat fixed;
-            display:flex; align-items:center; justify-content:center;
-            position:relative; overflow-x:hidden; overflow-y:auto; padding:20px 0;
-        }
-        body::before { content:''; position:absolute; inset:0; background:rgba(26,26,46,0.55); z-index:0; }
-
-        .particles { position:absolute; inset:0; pointer-events:none; z-index:0; }
-        .particle { position:absolute; background:rgba(255,255,255,0.1); border-radius:50%; animation:float 12s ease-in-out infinite; }
-        .particle:nth-child(1){width:100px;height:100px;top:15%;left:15%;}
-        .particle:nth-child(2){width:80px;height:80px;top:70%;left:80%;animation-delay:2s;}
-        .particle:nth-child(3){width:120px;height:120px;top:40%;left:10%;animation-delay:4s;}
-        .particle:nth-child(4){width:60px;height:60px;top:20%;left:75%;animation-delay:1s;}
-        .particle:nth-child(5){width:90px;height:90px;top:60%;left:50%;animation-delay:3s;}
-        .particle:nth-child(6){width:70px;height:70px;top:85%;left:25%;animation-delay:5s;}
-
-        .logo { position:fixed; top:20px; left:20px; z-index:100; animation:fadeIn 1s ease-out; }
-        .logo img { height:70px; filter:drop-shadow(0 4px 12px rgba(0,0,0,0.3)); }
-
-        .login-container {
-            position:relative; z-index:1; width:100%; max-width:1400px;
-            margin:80px auto; padding:0 40px;
-            display:flex; align-items:center; justify-content:space-between; gap:80px;
-            animation:fadeInScale 0.8s ease-out 0.4s backwards;
+            font-family: 'DM Sans', sans-serif;
+            display: flex;
+            min-height: 100vh;
+            background: var(--bg);
         }
 
-        .login-left { flex:1; max-width:600px; }
-        .main-title { font-family:'Sora',sans-serif; font-size:80px; font-weight:800; color:white; line-height:1; margin-bottom:20px; text-shadow:0 4px 20px rgba(0,0,0,0.4); }
-        .subtitle { font-size:18px; color:rgba(255,255,255,0.85); margin-bottom:30px; line-height:1.6; }
-        .attention { color:white; font-weight:700; font-size:17px; margin-bottom:20px; display:block; }
-        .welcome-list { color:white; font-size:16px; margin-bottom:10px; }
+        /* ── Panneau gauche ── */
+        .left-panel {
+            flex: 1;
+            background: linear-gradient(145deg, #1a1a2e 0%, #16213e 40%, #0f3460 70%, #533483 100%);
+            display: flex; flex-direction: column;
+            justify-content: space-between;
+            padding: 48px;
+            position: relative;
+            overflow: hidden;
+        }
 
-        .login-right { flex:0 0 420px; }
+        /* Motif géométrique décoratif */
+        .left-panel::before {
+            content: '';
+            position: absolute; inset: 0;
+            background:
+                radial-gradient(ellipse at 20% 20%, rgba(255,107,157,0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(118,75,162,0.2) 0%, transparent 50%);
+        }
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.05);
+            top: -100px; right: -100px;
+        }
+
+        /* Cercles décoratifs */
+        .deco-circle {
+            position: absolute; border-radius: 50%;
+            border: 1px solid rgba(255,255,255,0.07);
+        }
+        .deco-1 { width:320px; height:320px; bottom:-80px; left:-80px; }
+        .deco-2 { width:180px; height:180px; top:30%; right:10%; border-color:rgba(255,107,157,0.12); }
+        .deco-3 { width:80px; height:80px; top:15%; left:30%; background:rgba(255,107,157,0.06); border:none; animation:float 6s ease-in-out infinite; }
+
+        .left-top { position:relative; z-index:1; }
+        .left-logo {
+            display: flex; align-items: center; gap: 14px;
+            animation: fadeInLeft 0.6s ease-out;
+        }
+        .left-logo-icon {
+            width: 48px; height: 48px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 24px; box-shadow: 0 8px 24px rgba(255,107,157,0.35);
+        }
+        .left-logo-text .name { font-family:'Sora',sans-serif; font-size:20px; font-weight:800; color:white; }
+        .left-logo-text .sub  { font-size:12px; color:rgba(255,255,255,0.45); margin-top:1px; }
+
+        .left-content {
+            position: relative; z-index:1;
+            animation: fadeInLeft 0.6s ease-out 0.15s backwards;
+        }
+        .left-tagline {
+            font-family: 'Sora', sans-serif;
+            font-size: clamp(28px, 3.5vw, 42px);
+            font-weight: 800; color: white;
+            line-height: 1.2; margin-bottom: 18px;
+        }
+        .left-tagline span {
+            background: linear-gradient(135deg, #FF6B9D, #FFB4D6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .left-desc {
+            font-size: 15px; color: rgba(255,255,255,0.5);
+            line-height: 1.7; max-width: 340px; margin-bottom: 36px;
+        }
+
+        .features { display: flex; flex-direction: column; gap: 14px; }
+        .feature {
+            display: flex; align-items: center; gap: 14px;
+            animation: fadeInLeft 0.5s ease-out backwards;
+        }
+        .feature:nth-child(1){animation-delay:0.2s;}
+        .feature:nth-child(2){animation-delay:0.3s;}
+        .feature:nth-child(3){animation-delay:0.4s;}
+        .feature:nth-child(4){animation-delay:0.5s;}
+        .feature-icon {
+            width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+            background: rgba(255,255,255,0.08);
+            display: flex; align-items: center; justify-content: center; font-size: 18px;
+        }
+        .feature-text { font-size: 14px; color: rgba(255,255,255,0.7); font-weight: 500; }
+
+        .left-footer {
+            position: relative; z-index:1;
+            font-size: 12px; color: rgba(255,255,255,0.25);
+        }
+
+        /* ── Panneau droit ── */
+        .right-panel {
+            width: 480px; flex-shrink: 0;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 48px 56px;
+            background: white;
+            position: relative;
+        }
+
+        .right-panel::before {
+            content: '';
+            position: absolute; left: 0; top: 15%; bottom: 15%;
+            width: 1px; background: linear-gradient(to bottom, transparent, var(--border), transparent);
+        }
 
         .login-box {
-            background:rgba(255,255,255,0.12); backdrop-filter:blur(30px);
-            border:1px solid rgba(255,255,255,0.25); border-radius:28px;
-            padding:40px; box-shadow:var(--shadow-lg);
+            width: 100%;
+            animation: fadeInRight 0.6s ease-out 0.1s backwards;
         }
-        .login-box h2 { font-family:'Sora',sans-serif; font-size:28px; font-weight:700; color:white; margin-bottom:30px; }
 
-        .form-group { margin-bottom:20px; position:relative; }
-        .form-group label { display:block; font-weight:600; color:rgba(255,255,255,0.9); margin-bottom:8px; font-size:14px; }
-        .form-group input {
-            width:100%; padding:14px 18px; border-radius:14px;
-            border:1px solid rgba(255,255,255,0.25); background:rgba(255,255,255,0.12);
-            color:white; font-size:15px; font-family:'DM Sans',sans-serif;
-            transition:all 0.3s; outline:none;
+        .login-header { margin-bottom: 32px; }
+        .login-welcome {
+            font-size: 13px; font-weight: 600; color: var(--primary);
+            text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
         }
-        .form-group input::placeholder { color:rgba(255,255,255,0.4); }
-        .form-group input:focus { border-color:var(--primary); background:rgba(255,255,255,0.18); box-shadow:0 0 0 3px rgba(255,107,157,0.25); }
-
-        .pwd-toggle { position:absolute; right:15px; bottom:14px; cursor:pointer; font-size:18px; opacity:0.7; transition:opacity 0.2s; }
-        .pwd-toggle:hover { opacity:1; }
-
-        .login-btn {
-            width:100%; padding:15px; border-radius:50px; border:none;
-            background:linear-gradient(135deg,var(--primary),#C94A6D);
-            color:white; font-size:16px; font-weight:700; font-family:'Sora',sans-serif;
-            cursor:pointer; transition:all 0.3s; box-shadow:0 8px 20px rgba(255,107,157,0.4); margin-top:10px;
+        .login-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 28px; font-weight: 800; color: var(--text);
+            margin-bottom: 6px;
         }
-        .login-btn:hover { transform:translateY(-3px); box-shadow:0 12px 30px rgba(255,107,157,0.55); }
+        .login-sub { font-size: 14px; color: var(--text-muted); }
 
-        .divider { display:flex; align-items:center; gap:12px; margin:22px 0; color:rgba(255,255,255,0.4); font-size:13px; }
-        .divider::before,.divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.18); }
-
-        .guest-btn {
-            width:100%; padding:13px; border-radius:50px;
-            border:2px solid rgba(255,255,255,0.28); background:rgba(255,255,255,0.07);
-            color:rgba(255,255,255,0.78); font-size:14px; font-weight:600;
-            font-family:'DM Sans',sans-serif; cursor:pointer; transition:all 0.3s;
+        /* Champs */
+        .field { margin-bottom: 18px; }
+        .field label {
+            display: block; font-size: 13px; font-weight: 600;
+            color: var(--text); margin-bottom: 7px;
         }
-        .guest-btn:hover { background:rgba(255,255,255,0.15); border-color:rgba(255,255,255,0.45); transform:translateY(-2px); }
-        .guest-note { text-align:center; margin-top:9px; font-size:12px; color:rgba(255,255,255,0.38); }
-
-        .error {
-            display:none; color:#FF6B9D; background:rgba(255,107,157,0.15);
-            border:1px solid rgba(255,107,157,0.3); border-radius:10px;
-            padding:12px; font-size:14px; font-weight:600; margin-top:15px; text-align:center;
+        .field-wrap { position: relative; }
+        .field-icon {
+            position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+            font-size: 16px; color: var(--text-muted); pointer-events: none;
         }
-        .error.show { display:block; }
+        .field input {
+            width: 100%; padding: 13px 14px 13px 42px;
+            border: 1.5px solid var(--border); border-radius: 12px;
+            font-size: 14px; font-family: 'DM Sans', sans-serif;
+            color: var(--text); background: var(--bg);
+            outline: none; transition: all 0.2s;
+        }
+        .field input:focus {
+            border-color: var(--primary); background: white;
+            box-shadow: 0 0 0 3px rgba(255,107,157,0.1);
+        }
+        .field input::placeholder { color: #c4c9d4; }
+        .pwd-eye {
+            position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+            cursor: pointer; font-size: 16px; color: var(--text-muted);
+            transition: color 0.2s; user-select: none;
+        }
+        .pwd-eye:hover { color: var(--primary); }
 
-        .footer { position:fixed; bottom:20px; left:20px; z-index:100; }
-        .footer img { height:40px; opacity:0.8; }
+        /* Bouton principal */
+        .btn-login {
+            width: 100%; padding: 14px;
+            border: none; border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white; font-size: 15px; font-weight: 700;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: all 0.25s;
+            box-shadow: 0 6px 20px rgba(255,107,157,0.35);
+            margin-bottom: 16px; margin-top: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-login:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(255,107,157,0.45); }
+        .btn-login:disabled { opacity: 0.7; cursor: wait; transform: none; }
 
-        @media(max-width:1024px){.login-container{flex-direction:column;margin:80px auto;padding:0 30px;gap:40px;}.login-left{text-align:center;}.login-right{max-width:500px;width:100%;}}
-        @media(max-width:768px){.main-title{font-size:50px;}.login-box{padding:30px 25px;}}
-        @media(max-width:500px){.main-title{font-size:40px;}.login-container{padding:0 15px;}}
+        /* Séparateur */
+        .divider {
+            display: flex; align-items: center; gap: 12px;
+            margin: 20px 0; color: var(--text-muted); font-size: 12px;
+        }
+        .divider::before, .divider::after {
+            content: ''; flex: 1; height: 1px; background: var(--border);
+        }
+
+        /* Bouton invité */
+        .btn-guest {
+            width: 100%; padding: 13px;
+            border: 1.5px solid var(--border); border-radius: 12px;
+            background: white; color: var(--text-muted);
+            font-size: 14px; font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer; transition: all 0.25s;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .btn-guest:hover {
+            border-color: var(--accent2); color: var(--accent2);
+            background: rgba(102,126,234,0.04);
+        }
+        .guest-note {
+            text-align: center; margin-top: 10px;
+            font-size: 11px; color: #c4c9d4;
+        }
+
+        /* Erreur */
+        .error-msg {
+            display: none;
+            padding: 12px 16px; border-radius: 10px; margin-top: 14px;
+            background: rgba(255,107,157,0.08); border: 1.5px solid rgba(255,107,157,0.25);
+            color: var(--primary-dark); font-size: 13px; font-weight: 600;
+            text-align: center;
+        }
+        .error-msg.show { display: block; animation: fadeInUp 0.3s ease-out; }
+
+        /* Responsive */
+        @media(max-width: 900px) {
+            .left-panel { display: none; }
+            .right-panel { width: 100%; padding: 40px 32px; }
+            .right-panel::before { display: none; }
+        }
+        @media(max-width: 480px) {
+            .right-panel { padding: 32px 24px; }
+        }
     </style>
 </head>
 <body>
-    <div class="particles">
-        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-        <div class="particle"></div><div class="particle"></div><div class="particle"></div>
-    </div>
-    <div class="logo"><img src="img/logo.png" alt="Info PED" onerror="this.style.display='none'"></div>
 
-    <div class="login-container">
-        <div class="login-left">
-            <h1 class="main-title">LES INFOPED</h1>
-            <p class="subtitle">un petit site où s'informer des news du service de pédiatrie et des urgences pédiatriques</p>
-            <p class="attention">À l'attention de l'ensemble de l'équipe médicale et paramédicale</p>
-            <p class="welcome-list">💊 Protocoles et médicaments à jour</p><p class="welcome-list"><br></p>
-            <p class="welcome-list">💡 Projets et informations RH</p><p class="welcome-list"><br></p>
-            <p class="welcome-list">📆 Agenda et évènements du service</p><p class="welcome-list"><br></p>
-            <p class="welcome-list">🔒 Accès rapide et sécurisé</p>
-        </div>
+    <!-- Panneau gauche -->
+    <div class="left-panel">
+        <div class="deco-circle deco-1"></div>
+        <div class="deco-circle deco-2"></div>
+        <div class="deco-circle deco-3"></div>
 
-        <div class="login-right">
-            <div class="login-box">
-                <h2>👋 Bienvenue</h2>
-                <div class="form-group">
-                    <label for="username">Nom d'utilisateur</label>
-                    <input type="text" id="username" placeholder="Entrez votre nom d'utilisateur" autocomplete="username">
+        <div class="left-top">
+            <div class="left-logo">
+                <div class="left-logo-icon">🏥</div>
+                <div class="left-logo-text">
+                    <div class="name">Les InfoPED</div>
+                    <div class="sub">Pédiatrie · Urgences pédiatriques</div>
                 </div>
-                <div class="form-group">
-                    <label for="password">Mot de passe</label>
-                    <input type="password" id="password" placeholder="Entrez votre mot de passe" autocomplete="current-password">
-                    <span class="pwd-toggle" onclick="togglePwd()">👁️</span>
-                </div>
-                <button class="login-btn" id="loginBtn" onclick="login()">✨ Se connecter</button>
-                <div class="error" id="error"></div>
-                <div class="divider">ou</div>
-                <button class="guest-btn" onclick="goGuest()">👁️ Continuer en tant qu'invité</button>
-                <p class="guest-note">Accès en lecture seule · sans compte requis</p>
             </div>
         </div>
+
+        <div class="left-content">
+            <h1 class="left-tagline">
+                Toutes les actualités<br>du service,<br><span>en un coup d'œil.</span>
+            </h1>
+            <p class="left-desc">
+                Accédez rapidement aux protocoles, à l'agenda et aux actualités du service de pédiatrie.
+            </p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">💊</div>
+                    <span class="feature-text">Protocoles et médicaments à jour</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📆</div>
+                    <span class="feature-text">Agenda et évènements du service</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">👥</div>
+                    <span class="feature-text">Informations RH et projets en cours</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <span class="feature-text">Accès sécurisé par compte</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="left-footer">
+            À l'attention de l'équipe médicale et paramédicale
+        </div>
     </div>
 
-    <div class="footer"><img src="img/genially-logo.png" alt="" onerror="this.style.display='none'"></div>
+    <!-- Panneau droit -->
+    <div class="right-panel">
+        <div class="login-box">
+            <div class="login-header">
+                <div class="login-welcome">Bienvenue</div>
+                <h2 class="login-title">Connectez-vous</h2>
+                <p class="login-sub">Entrez vos identifiants pour accéder au dashboard</p>
+            </div>
 
-    <!-- Chargement des utilisateurs depuis data.js -->
+            <div class="field">
+                <label for="username">Nom d'utilisateur</label>
+                <div class="field-wrap">
+                    <span class="field-icon">👤</span>
+                    <input type="text" id="username" placeholder="Entrez votre identifiant" autocomplete="username">
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="password">Mot de passe</label>
+                <div class="field-wrap">
+                    <span class="field-icon">🔑</span>
+                    <input type="password" id="password" placeholder="Entrez votre mot de passe" autocomplete="current-password">
+                    <span class="pwd-eye" onclick="togglePwd()">👁️</span>
+                </div>
+            </div>
+
+            <button class="btn-login" id="loginBtn" onclick="login()">
+                <span id="loginLabel">Se connecter</span>
+            </button>
+
+            <div class="error-msg" id="errorMsg"></div>
+
+            <div class="divider">ou continuer sans compte</div>
+
+            <button class="btn-guest" onclick="goGuest()">
+                👁️ Accès invité — lecture seule
+            </button>
+            <p class="guest-note">Aucun compte requis · Accès en lecture seule uniquement</p>
+        </div>
+    </div>
+
     <script src="data.js"></script>
     <script>
         function togglePwd() {
@@ -169,11 +362,12 @@
             i.type = i.type === 'password' ? 'text' : 'password';
         }
 
-        function login() {
+        async function login() {
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
-            const err = document.getElementById('error');
+            const err = document.getElementById('errorMsg');
             const btn = document.getElementById('loginBtn');
+            const lbl = document.getElementById('loginLabel');
             err.classList.remove('show');
 
             if (!username || !password) {
@@ -181,20 +375,27 @@
                 err.classList.add('show'); return;
             }
 
+            btn.disabled = true;
+            lbl.textContent = 'Connexion en cours…';
+
             const found = PED_USERS.find(u => u.username === username && u.password === password);
 
             if (found) {
                 sessionStorage.setItem('ped_user', JSON.stringify({ username: found.username, role: found.role }));
-                btn.textContent = '✓ Connexion réussie !';
+                lbl.textContent = '✓ Connecté !';
                 btn.style.background = 'linear-gradient(135deg,#4ECDC4,#44A08D)';
+                btn.style.boxShadow = '0 6px 20px rgba(78,205,196,0.4)';
                 setTimeout(() => window.location.replace('index.html'), 500);
             } else {
                 err.textContent = '❌ Identifiant ou mot de passe incorrect';
                 err.classList.add('show');
-                ['username', 'password'].forEach(id => {
+                btn.disabled = false;
+                lbl.textContent = 'Se connecter';
+                ['username','password'].forEach(id => {
                     const el = document.getElementById(id);
-                    el.style.animation = 'shake 0.5s';
-                    setTimeout(() => el.style.animation = '', 500);
+                    el.style.animation = 'shake 0.4s ease';
+                    el.style.borderColor = 'var(--primary)';
+                    setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 400);
                 });
             }
         }
