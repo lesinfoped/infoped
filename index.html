@@ -311,7 +311,7 @@
         <nav class="sidebar-nav">
             <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span><span>Accueil</span></a>
             <a class="nav-item" href="medicaments.html"><span class="nav-icon">💊</span><span>Médicaments</span></a>
-            <a class="nav-item" href="hygiene.html"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a class="nav-item" href="hygiene.html"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
             <a class="nav-item" href="projets.html"><span class="nav-icon">💡</span><span>Projets</span></a>
             <a class="nav-item" href="rh.html"><span class="nav-icon">👥</span><span>RH</span></a>
             <a class="nav-item" href="divers.html"><span class="nav-icon">📋</span><span>Divers</span></a>
@@ -381,9 +381,9 @@
                     <div class="card-stripe stripe-teal"></div>
                     <div class="card-header">
                         <div class="card-header-left">
-                            <div class="card-icon ci-teal">🦠</div>
+                            <div class="card-icon ci-teal">📌</div>
                             <div>
-                                <div class="card-title">Hygiène</div>
+                                <div class="card-title">Organisation &amp; Pratique</div>
                                 <div class="card-count" id="count-hygiene">—</div>
                             </div>
                         </div>
@@ -500,13 +500,23 @@
         if (isAdmin) document.getElementById('adminBtn').style.display = 'flex';
 
         // Rendu cartes
-        const sections = ['medicaments','hygiene','projets','rh','divers','evenements'];
+        const sections = ['medicaments','projets','rh','divers','evenements'];
         sections.forEach(s => {
             const items = (PED_CONTENT[s]||[]);
             const total = items.length;
             document.getElementById('count-'+s).textContent = total + ' élément' + (total > 1 ? 's' : '');
             renderCardList('list-'+s, items.slice(0,3));
         });
+
+        // Carte Organisation & Pratique — combinaison des 3 sous-sections
+        const hygieneItems = [
+            ...(PED_CONTENT.hygiene_htc||[]),
+            ...(PED_CONTENT.hygiene_urgence||[]),
+            ...(PED_CONTENT.hygiene_pedopsy||[])
+        ];
+        const hygieneTotal = hygieneItems.length;
+        document.getElementById('count-hygiene').textContent = hygieneTotal + ' élément' + (hygieneTotal > 1 ? 's' : '');
+        renderCardList('list-hygiene', hygieneItems.slice(0,3));
 
         // Agenda
         const events = (PED_AGENDA||[]);

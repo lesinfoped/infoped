@@ -158,7 +158,7 @@
         <nav class="sidebar-nav">
             <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
             <a href="medicaments.html" class="nav-item active"><span class="nav-icon">💊</span><span>Médicaments</span></a>
-            <a href="hygiene.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="hygiene.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
             <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
             <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
             <a href="divers.html" class="nav-item"><span class="nav-icon">📋</span><span>Divers</span></a>
@@ -232,7 +232,10 @@
         }
 
         localContent = JSON.parse(JSON.stringify(PED_CONTENT));
-        if (!localContent.evenements) localContent.evenements = [];
+        if (!localContent.evenements)       localContent.evenements = [];
+        if (!localContent.hygiene_htc)      localContent.hygiene_htc = [];
+        if (!localContent.hygiene_urgence)  localContent.hygiene_urgence = [];
+        if (!localContent.hygiene_pedopsy)  localContent.hygiene_pedopsy = [];
         localAgenda  = JSON.parse(JSON.stringify(PED_AGENDA || []));
         pedInitEdit(localContent, localAgenda, renderPage);
         renderPage();
