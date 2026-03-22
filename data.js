@@ -101,12 +101,70 @@ const PED_CONTENT = {
     ],
 
     hygiene_htc: [
+        {
+            texte:     "VIGILANCE en ce qui concerne les commandes de matériel et de pharmacie. Rappel du système plein/vide ++. Anticipation de l’activité sur le week-end et la nuit.",
+            lien:      "",
+            type:      "alert",
+            size:      "",
+            textColor: "#C94A6D",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Remettre un « livret d’accueil – P’tits Doudous » aux enfants avant le bloc opératoire, en pédiatrie et aux urgences pédiatriques, pour les interventions non programmées.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Tuyau d’évacuation du MEOPA est à changer tous les lundis, feuille de traçabilité à remplir.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        }
     ],
 
     hygiene_urgence: [
+        {
+            texte:     "A la demande des médecins, merci de mesurer le PC des enfants jusqu’à 1 an à l’admission (UP ou HTC)",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        }
     ],
 
     hygiene_pedopsy: [
+        {
+            texte:     "Remettre et faire signer le contrat ados (version couleur). Original à classer dans le dossier patient --> cf image",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        }
+    ],
+
+    hygiene: [
     ],
 
     divers: [
@@ -248,12 +306,12 @@ const PED_CONTENT = {
 
 const PED_AGENDA = [
     {
-        jour:         "7",
+        jour:         "7&8",
         mois:         "AVR",
         titre:        "Formation PDE pour habilitation MicroCRP aux UP",
-        heure:        "",
-        lieu:         "",
-        participants: ""
+        heure:        "cf planning",
+        lieu:         "UP",
+        participants: "Toutes les IDE"
     },
     {
         jour:         "13",
