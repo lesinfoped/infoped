@@ -327,6 +327,7 @@
             <a class="nav-item active" href="index.html"><span class="nav-icon">🏠</span><span>Accueil</span></a>
             <a class="nav-item" href="medicaments.html"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
             <a class="nav-item" href="hygiene.html"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
+            <a class="nav-item" href="hygiene2.html"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
             <a class="nav-item" href="projets.html"><span class="nav-icon">💡</span><span>Projets</span></a>
             <a class="nav-item" href="rh.html"><span class="nav-icon">👥</span><span>RH</span></a>
             <a class="nav-item" href="divers.html"><span class="nav-icon">📋</span><span>Divers</span></a>
@@ -416,7 +417,7 @@
                     <div class="card-body"><ul class="card-list" id="list-projets"></ul></div>
                 </div>
 
-                <!-- L2C1 : Hygiène (= Organisation & Pratique, affiche les mêmes données) -->
+                <!-- L2C1 : Hygiène (section indépendante) -->
                 <div class="section-card">
                     <div class="card-stripe stripe-teal"></div>
                     <div class="card-header">
@@ -424,7 +425,7 @@
                             <div class="card-icon ci-teal">🦠</div>
                             <div><div class="card-title">Hygiène</div><div class="card-count" id="count-hygiene2">—</div></div>
                         </div>
-                        <a class="card-link" href="hygiene.html">Voir plus →</a>
+                        <a class="card-link" href="hygiene2.html">Voir plus →</a>
                     </div>
                     <div class="card-body"><ul class="card-list" id="list-hygiene2"></ul></div>
                 </div>
@@ -520,10 +521,13 @@
             ...(PED_CONTENT.hygiene_urgence||[]),
             ...(PED_CONTENT.hygiene_pedopsy||[])
         ];
-        document.getElementById('count-hygiene').textContent  = hygItems.length + ' élément' + (hygItems.length > 1 ? 's' : '');
-        document.getElementById('count-hygiene2').textContent = hygItems.length + ' élément' + (hygItems.length > 1 ? 's' : '');
-        renderCardList('list-hygiene',  hygItems.slice(0,3));
-        renderCardList('list-hygiene2', hygItems.slice(0,3));
+        document.getElementById('count-hygiene').textContent = hygItems.length + ' élément' + (hygItems.length > 1 ? 's' : '');
+        renderCardList('list-hygiene', hygItems.slice(0,3));
+
+        // Hygiène — section indépendante
+        const hygItems2 = (PED_CONTENT.hygiene||[]);
+        document.getElementById('count-hygiene2').textContent = hygItems2.length + ' élément' + (hygItems2.length > 1 ? 's' : '');
+        renderCardList('list-hygiene2', hygItems2.slice(0,3));
 
         // Agenda
         const events = (PED_AGENDA||[]);

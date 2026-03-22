@@ -55,7 +55,18 @@ const PED_CONTENT = {
 
     medicaments: [
         {
-            texte:     "Protocole Doliprane mis à jour",
+            texte:     "TUBULURE SPIRALE : toujours en test dans le service, pour les patients d’onco-hémato, drépanocytaires ou ayant une antibiothérapie au long cours. \nFeuille d’évaluation produit à remplir à chaque utilisation avant la mise en place définitive et à remettre à la cadre.",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      true,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "Nouveau raccord Nutrisafe pour adapter au SNG",
             lien:      "",
             type:      "normal",
             size:      "",
@@ -66,7 +77,7 @@ const PED_CONTENT = {
             under:     false
         },
         {
-            texte:     "Amoxicilline — nouvelle posologie pédiatrique",
+            texte:     "Ajout d'ATB IV dans la pharmacie des URGENCES PED : Metronidazole, Aciclovir, Augmentin 500mg.",
             lien:      "",
             type:      "normal",
             size:      "",
@@ -77,9 +88,9 @@ const PED_CONTENT = {
             under:     false
         },
         {
-            texte:     "Ibuprofène pédiatrique : dosages révisés — voir protocole",
+            texte:     "AEROSOL : à mettre sous Air si sat>94% et sous O2 si sat<94%",
             lien:      "",
-            type:      "alert",
+            type:      "normal",
             size:      "",
             textColor: "",
             hlColor:   "",
@@ -89,29 +100,13 @@ const PED_CONTENT = {
         }
     ],
 
-    hygiene: [
-        {
-            texte:     "Informations et rappels liés à l'hygiène",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
-        },
-        {
-            texte:     "Protocoles de désinfection mis à jour",
-            lien:      "",
-            type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
-        }
+    hygiene_htc: [
+    ],
+
+    hygiene_urgence: [
+    ],
+
+    hygiene_pedopsy: [
     ],
 
     divers: [
@@ -130,7 +125,18 @@ const PED_CONTENT = {
 
     projets: [
         {
-            texte:     "Projets en cours de développement",
+            texte:     "MICRO-CRP capillaire : Formation les 7 et 8 avril aux Urgences Pédiatriques. Présence de la prestataire toute la journée, y compris en début de nuit pour les équipes de nuit. (cf info ds planning PDE) Puis formation des professionnels absents, par les 4 référentes : Rozenn LQ, Ludivine, Nolwenn et Solène.",
+            lien:      "",
+            type:      "alert",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "appel à candidature pour référent(s) DM",
             lien:      "",
             type:      "normal",
             size:      "",
@@ -141,7 +147,29 @@ const PED_CONTENT = {
             under:     false
         },
         {
-            texte:     "Nouvelles initiatives du service",
+            texte:     "Travaux des UP : en cours",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "réorganisation HTC :",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "groupe de travail Pedopsy : date d'une première réunion à fixer",
             lien:      "",
             type:      "normal",
             size:      "",
@@ -155,20 +183,9 @@ const PED_CONTENT = {
 
     rh: [
         {
-            texte:     "Informations ressources humaines",
+            texte:     "nouvelle trame PDE : affichée en salle de pause avec présentation au CSE prévue en Juin",
             lien:      "",
             type:      "normal",
-            size:      "",
-            textColor: "",
-            hlColor:   "",
-            bold:      false,
-            italic:    false,
-            under:     false
-        },
-        {
-            texte:     "PDE : Vous pouvez consulter votre planning du mois d'Avril à partir du 03/03",
-            lien:      "",
-            type:      "alert",
             size:      "",
             textColor: "",
             hlColor:   "",
@@ -180,11 +197,33 @@ const PED_CONTENT = {
 
     evenements: [
         {
-            texte:     "Évènements à venir prochainement",
+            texte:     "OYE OYE LA PEDIA !! Soirée de service le jeudi 12/03",
             lien:      "",
             type:      "normal",
             size:      "",
-            textColor: "#667eea",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "galettes de roi le 26/01 en salle de réunion de pédiatrie",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
+            texte:     "anniversaire de",
+            lien:      "",
+            type:      "normal",
+            size:      "",
+            textColor: "",
             hlColor:   "",
             bold:      false,
             italic:    false,
@@ -209,36 +248,44 @@ const PED_CONTENT = {
 
 const PED_AGENDA = [
     {
-        jour:         "03",
-        mois:         "FÉV",
-        titre:        "Réunion CA PUER",
-        heure:        "14h00 - 16h00",
-        lieu:         "Salle de réunion A, Bâtiment principal",
-        participants: "Dr. Martin, Dr. Dupont, Mme Lefebvre"
+        jour:         "7",
+        mois:         "AVR",
+        titre:        "Formation PDE pour habilitation MicroCRP aux UP",
+        heure:        "",
+        lieu:         "",
+        participants: ""
     },
     {
-        jour:         "04",
-        mois:         "FÉV",
-        titre:        "Réunion CA AP",
-        heure:        "10h30 - 12h30",
-        lieu:         "Amphithéâtre, 2ème étage",
-        participants: "Équipe administrative complète"
+        jour:         "13",
+        mois:         "MAR",
+        titre:        "Retour des questionnaire de satisfaction par Servane OLIVO",
+        heure:        "14h30",
+        lieu:         "salle de réunion / Teams",
+        participants: ""
+    },
+    {
+        jour:         "17",
+        mois:         "MAR",
+        titre:        "CREX = prise en charge complexe Pansinusite avec choc septique et CIVD",
+        heure:        "15h30 - 17h00",
+        lieu:         "salle de reunion pedia",
+        participants: ""
     },
     {
         jour:         "05",
         mois:         "MAR",
         titre:        "GRE – La Brise",
-        heure:        "9h00 - 17h00",
-        lieu:         "Centre La Brise, Vannes",
+        heure:        "14h30 - 16h30",
+        lieu:         "salle de réunion pédia",
         participants: "Groupe de travail GRE"
     },
     {
         jour:         "09",
         mois:         "AVR",
         titre:        "CREX",
-        heure:        "13h00 - 15h00",
-        lieu:         "Salle de conférence, Bloc pédiatrique",
-        participants: "Équipe médicale"
+        heure:        "A définir",
+        lieu:         "Salle de réunion",
+        participants: ""
     }
 ];
 

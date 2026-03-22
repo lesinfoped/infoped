@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Info PED — 💊 Thérapeutique</title>
+    <title>Info PED — 🦠 Hygiène</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -156,9 +156,9 @@
         <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
             <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span>Accueil</span></a>
-            <a href="medicaments.html" class="nav-item active"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
+            <a href="hygiene2.html" class="nav-item active"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
             <a href="hygiene.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
-            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
+            <a href="hygiene2.html" class="nav-item active"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
             <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
             <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
             <a href="divers.html" class="nav-item"><span class="nav-icon">📋</span><span>Divers</span></a>
@@ -184,7 +184,7 @@
             <div class="page-header">
                 <div class="page-header-left">
                     <div class="page-eyebrow">Info PED</div>
-                    <h1 class="page-h1">💊 Thérapeutique</h1>
+                    <h1 class="page-h1">🦠 Hygiène</h1>
                     <div class="page-count" id="pageCount">—</div>
                 </div>
                 <div class="page-header-right">
@@ -242,12 +242,12 @@
         renderPage();
 
         // Compteur
-        const cnt = (localContent["medicaments"]||[]).length; document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
+        const cnt = (localContent["hygiene"]||[]).length; document.getElementById("pageCount").textContent = cnt + " élément" + (cnt > 1 ? "s" : "");
     });
 
     function renderPage() {
         const isAdmin = currentUser.role === 'admin' && isEditMode;
-        pedRenderSection('list-medicaments', localContent['medicaments']||[], isAdmin, 'medicaments', null);
+        pedRenderSection('list-hygiene', localContent['hygiene']||[], isAdmin, 'hygiene', null);
     }
 
     function toggleEdit() {
