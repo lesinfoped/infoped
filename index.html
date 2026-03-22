@@ -228,7 +228,6 @@
         }
         .alert-item::before { display:none; }
         .alert-item .icon { margin-right:8px; }
-        .alert-item .text { font-weight:600; font-size:13px; color:var(--primary-dark); }
 
         /* Agenda pleine largeur */
         .agenda-card { grid-column:1 / -1; }
@@ -561,7 +560,7 @@
             const txt = pedStyledText(item);
             if (item.type === 'alert') {
                 li.classList.add('alert-item');
-                li.innerHTML = `<span class="icon">🚨</span><span class="text">${txt}</span>`;
+                li.innerHTML = `<span class="icon">🚨</span><span>${txt}</span>`;
             } else if (item.lien) {
                 li.classList.add('with-button');
                 li.innerHTML = `<span>${txt}</span><a href="${pedEsc(item.lien)}" target="_blank" rel="noopener"><button>📎</button></a>`;

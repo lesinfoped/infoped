@@ -53,7 +53,7 @@ function pedRenderSection(ulId, items, isAdmin, sectionKey, limit) {
         const txt = pedStyledText(item);
         if (item.type === 'alert') {
             li.classList.add('alert-item');
-            li.innerHTML = '<span class="icon">🚨</span><span class="text">'+txt+'</span>';
+            li.innerHTML = '<span class="icon">🚨</span><span>'+txt+'</span>';
         } else if (item.lien) {
             li.classList.add('with-button');
             li.innerHTML = '<span>'+txt+'</span><a href="'+pedEsc(item.lien)+'" target="_blank" rel="noopener"><button title="Ouvrir">📎</button></a>';
@@ -131,7 +131,7 @@ async function pedDeploy(localContent, localAgenda, onStart, onEnd) {
 
 // ── Sérialiseurs ──────────────────────────────────────
 function pedBuildContentBlock(lc) {
-    const sections = ['medicaments','hygiene','divers','projets','rh','evenements'];
+    const sections = ['medicaments','hygiene_htc','hygiene_urgence','hygiene_pedopsy','divers','projets','rh','evenements'];
     let out = 'const PED_CONTENT = {\n\n';
     sections.forEach((s,si) => {
         out += '    '+s+': [\n';
