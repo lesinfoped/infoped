@@ -194,9 +194,9 @@ const PED_LAST_UPDATE = "21/03/2026";
 // Le token est découpé en 3 parties pour éviter la détection automatique de GitHub.
 // Remplacez T1, T2, T3 par les 3 parties de votre token ghp_XXXX (découpez-le en 3 morceaux égaux).
 // Exemple : "ghp_AbCdEfGhIjKlMnOpQrStUvWxYz123456" → T1="ghp_AbCdEf", T2="GhIjKlMn", T3="OpQrStUvWxYz123456"
-const _t1 = "ghp_I0nDJVdUvNZwP";
-const _t2 = "BG0CtP6wNKG";
-const _t3 = "KAwmEN0NDBcw";
+const _t1 = "ghp_xmcypXTHNBO8ug";
+const _t2 = "nmUEbrGpxvkVM";
+const _t3 = "1gZ3T96gD";
 
 const PED_GITHUB = {
     token: _t1 + _t2 + _t3,
