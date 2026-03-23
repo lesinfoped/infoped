@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Info PED — 🎉 Évènements de l'équipe</title>
+    <title>Info PED — 🎉 Évènements de l'équipe de l'équipe</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -142,29 +142,72 @@
             .main-inner{padding:20px 16px 60px;}
             #last-update{left:80px;}
         }
+
+        
+
+        
+
+        /* ── Sidebar collapse button ── */
+        .sidebar { overflow:hidden; transition:width 0.28s cubic-bezier(0.4,0,0.2,1); }
+        .sidebar-brand { position:relative; padding-bottom:12px; }
+        .sb-toggle {
+            position:absolute; bottom:-12px; right:16px;
+            width:24px; height:24px; border-radius:50%;
+            background:#fff; border:1px solid rgba(0,0,0,0.1);
+            box-shadow:0 2px 8px rgba(0,0,0,0.15);
+            display:flex; align-items:center; justify-content:center;
+            cursor:pointer; z-index:10; transition:all 0.22s;
+            color:#9ca3af; padding:0;
+        }
+        .sb-toggle:hover { box-shadow:0 3px 12px rgba(0,0,0,0.25); color:#374151; transform:scale(1.1); }
+        .sb-toggle svg { transition:transform 0.28s cubic-bezier(0.4,0,0.2,1); }
+        .sidebar.collapsed { width:64px; }
+        .sidebar.collapsed .sb-toggle { right:50%; transform:translateX(50%); }
+        .sidebar.collapsed .sb-toggle:hover { transform:translateX(50%) scale(1.1); }
+        .sidebar.collapsed .sb-toggle svg { transform:rotate(180deg); }
+        /* Masquer tout le texte — garder uniquement les icônes */
+        .sidebar.collapsed .brand-name,
+        .sidebar.collapsed .brand-sub,
+        .sidebar.collapsed .nav-label,
+        .sidebar.collapsed .nav-item span:not(.nav-icon),
+        .sidebar.collapsed .user-name,
+        .sidebar.collapsed .user-role,
+        .sidebar.collapsed .sidebar-section-label,
+        .sidebar.collapsed .sidebar-btn span:not(:first-child) { display:none; }
+        .sidebar.collapsed .brand-inner { justify-content:center; }
+        .sidebar.collapsed .nav-item { justify-content:center; padding:11px 8px; }
+        .sidebar.collapsed .user-card { justify-content:center; }
+        .sidebar.collapsed .sidebar-btn { justify-content:center; padding:10px 8px; }
+        .main-content,.main,.topbar { transition:margin-left 0.28s cubic-bezier(0.4,0,0.2,1),left 0.28s cubic-bezier(0.4,0,0.2,1); }
+        body.sb-on .main-content { margin-left:64px !important; }
+        body.sb-on .main { margin-left:64px !important; }
+        body.sb-on .topbar { left:64px !important; }
+        body.sb-on #last-update { left:80px !important; }
+
     </style>
 </head>
 <body>
 
-    <aside class="sidebar">
+    <aside class="sidebar" id="sidebar">
         <div class="sidebar-brand">
             <a class="brand-inner" href="index.html">
                 <div class="brand-icon">🏥</div>
                 <div><div class="brand-name">Les InfoPED</div><div class="brand-sub">Pédiatrie · Urgences</div></div>
             </a>
+            <button class="sb-toggle" onclick="toggleSidebar()" title="Réduire / Agrandir"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
         </div>
         <div class="sidebar-section-label">Menu</div>
         <nav class="sidebar-nav">
-            <a href="therapeutique.html" class="nav-item"><span class="nav-icon">💊</span><span>Thérapeutique</span></a>
-            <a href="organisation.html" class="nav-item"><span class="nav-icon">📌</span><span>Organisation &amp; Pratique</span></a>
-            <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span>Projets</span></a>
-            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span>Hygiène</span></a>
-            <a href="divers.html" class="nav-item"><span class="nav-icon">📁</span><span>Administratif &amp; Divers</span></a>
-            <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span>RH</span></a>
-            <a href="evenements.html" class="nav-item active"><span class="nav-icon">🎉</span><span>Évènements</span></a>
-            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span>Agenda</span></a>
-        </nav>
-        <div class="sidebar-bottom">
+            <a href="index.html" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-label">Accueil</span></a>
+            <a href="therapeutique.html" class="nav-item"><span class="nav-icon">💊</span><span class="nav-label">Thérapeutique</span></a>
+            <a href="organisation.html" class="nav-item"><span class="nav-icon">📌</span><span class="nav-label">Organisation &amp; Pratique</span></a>
+            <a href="projets.html" class="nav-item"><span class="nav-icon">💡</span><span class="nav-label">Projets</span></a>
+            <a href="hygiene2.html" class="nav-item"><span class="nav-icon">🦠</span><span class="nav-label">Hygiène</span></a>
+            <a href="divers.html" class="nav-item"><span class="nav-icon">📁</span><span class="nav-label">Administratif &amp; Divers</span></a>
+            <a href="rh.html" class="nav-item"><span class="nav-icon">👥</span><span class="nav-label">RH</span></a>
+            <a href="evenements.html" class="nav-item active"><span class="nav-icon">🎉</span><span class="nav-label">Évènements de l'équipe</span></a>
+            <a href="agenda.html" class="nav-item"><span class="nav-icon">📆</span><span class="nav-label">Agenda</span></a>
+        </nav>        <div class="sidebar-bottom">
             <div class="user-card">
                 <div class="user-ava" id="userAvatar">👤</div>
                 <div><div class="user-name" id="userName">—</div><div class="user-role" id="userRole">—</div></div>
@@ -266,6 +309,24 @@
         renderPage();
         if (isEditMode) pedToast('✏️ Mode édition activé');
     }
+
+    // ── Sidebar collapse ─────────────────────────────
+    function toggleSidebar() {
+        const sb = document.getElementById('sidebar');
+        if (!sb) return;
+        const col = sb.classList.toggle('collapsed');
+        document.body.classList.toggle('sb-on', col);
+        try { localStorage.setItem('ped_sb', col ? '1' : '0'); } catch(e) {}
+    }
+    (function(){
+        try {
+            if (localStorage.getItem('ped_sb') === '1') {
+                const sb = document.getElementById('sidebar');
+                if (sb) { sb.classList.add('collapsed'); document.body.classList.add('sb-on'); }
+            }
+        } catch(e) {}
+    })();
+
     </script>
 </body>
 </html>
