@@ -200,7 +200,64 @@ function pedInitEdit(lc, la, onSaved) {
     _pedLocalContent=lc; _pedLocalAgenda=la; _pedOnSaved=onSaved;
 }
 
-// ── Modal item ────────────────────────────────────────
+// ── Upload fichier vers GitHub ────────────────────────
+async function pedUploadFile(file) {
+    const cfg = pedGetGHConfig();
+    if (!cfg) { pedToast('⚠️ PED_GITHUB non configuré'); return null; }
+
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const base64 = e.target.result.split(',')[1];
+            // Nom unique : timestamp + nom original nettoyé
+            const clean = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+            const filename = Date.now() + '_' + clean;
+            const path = 'files/' + filename;
+            const API = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${path}`;
+            const H = { 'Authorization': `Bearer ${cfg.token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' };
+
+            try {
+                const res = await fetch(API, {
+                    method: 'PUT', headers: H,
+                    body: JSON.stringify({ message: '📎 Upload fichier: ' + filename, content: base64 })
+                });
+                if (!res.ok) { const err = await res.json(); throw new Error(err.message); }
+                const data = await res.json();
+                resolve(data.content.download_url);
+            } catch(err) {
+                pedToast('❌ Upload échoué: ' + err.message);
+                resolve(null);
+            }
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
+async function pedHandleFileUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const maxMB = 25;
+    if (file.size > maxMB * 1024 * 1024) { pedToast(`⚠️ Fichier trop grand (max ${maxMB} Mo)`); return; }
+
+    const btn = document.getElementById('pedUploadBtn');
+    const label = document.getElementById('pedUploadLabel');
+    if (btn) btn.style.pointerEvents = 'none';
+    if (label) { label.textContent = '⏳ Upload en cours…'; label.style.color = '#f5a623'; }
+
+    const url = await pedUploadFile(file);
+    if (btn) btn.style.pointerEvents = '';
+
+    if (url) {
+        document.getElementById('pedItemLink').value = url;
+        if (label) { label.textContent = '✅ ' + file.name; label.style.color = '#27ae60'; }
+        pedToast('✅ Fichier uploadé !');
+    } else {
+        if (label) { label.textContent = '❌ Échec upload'; label.style.color = '#FF6B9D'; }
+    }
+    input.value = '';
+}
+
+
 function pedOpenAddItem(section) {
     _pedEditSection=section; _pedEditIdx=null;
     document.getElementById('pedItemModalTitle').textContent='Ajouter un élément';
@@ -210,6 +267,8 @@ function pedOpenAddItem(section) {
     document.getElementById('pedItemSize').value='';
     _pedFmt={bold:false,italic:false,under:false,textColor:'',hlColor:'',size:''};
     _pedApplyFmtUI(); _pedUpdatePreview();
+    const ul = document.getElementById('pedUploadLabel');
+    if(ul){ ul.textContent='Aucun fichier sélectionné'; ul.style.color='#aaa'; }
     document.getElementById('pedItemModal').classList.add('open');
 }
 
@@ -224,6 +283,8 @@ function pedOpenEditItem(section,idx,e) {
     document.getElementById('pedItemSize').value=item.size||'';
     _pedFmt={bold:item.bold||false,italic:item.italic||false,under:item.under||false,textColor:item.textColor||'',hlColor:item.hlColor||'',size:item.size||''};
     _pedApplyFmtUI(); _pedUpdatePreview();
+    const ul2 = document.getElementById('pedUploadLabel');
+    if(ul2){ ul2.textContent = item.lien ? '📎 Fichier joint' : 'Aucun fichier sélectionné'; ul2.style.color = item.lien ? '#27ae60' : '#aaa'; }
     document.getElementById('pedItemModal').classList.add('open');
 }
 
@@ -393,7 +454,16 @@ function _injectModals(){
   </div>
 </div>
 <div class="ped-mf"><label>Aperçu</label><div class="ped-prev" id="pedPreview">Aperçu…</div></div>
-<div class="ped-mf"><label>Lien (optionnel)</label><input type="url" id="pedItemLink" placeholder="https://…"></div>
+<div class="ped-mf"><label>Lien ou pièce jointe</label>
+  <input type="url" id="pedItemLink" placeholder="https://… ou uploader un fichier ci-dessous">
+  <div style="margin-top:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+    <label id="pedUploadBtn" style="display:inline-flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:1.5px solid #e0e0e8;background:#f8f8fc;color:#555;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s;font-family:'DM Sans',sans-serif;" onmouseover="this.style.borderColor='#FF6B9D';this.style.color='#FF6B9D'" onmouseout="this.style.borderColor='#e0e0e8';this.style.color='#555'">
+      📎 Joindre un fichier
+      <input type="file" style="display:none" onchange="pedHandleFileUpload(this)">
+    </label>
+    <span id="pedUploadLabel" style="font-size:12px;color:#aaa;font-style:italic;">Aucun fichier sélectionné</span>
+  </div>
+</div>
 <div class="ped-mf"><label>Type</label>
   <select id="pedItemType"><option value="normal">Normal</option><option value="alert">🚨 Alerte</option></select>
 </div>

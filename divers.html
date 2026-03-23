@@ -125,10 +125,11 @@
         .empty-state{color:var(--text-muted);font-size:13px;font-style:italic;padding:8px 0;}
 
         /* Info bas */
-        #last-update{position:fixed;bottom:20px;left:calc(var(--sidebar-w) + 20px);background:white;border:1px solid var(--border);padding:8px 16px;border-radius:20px;font-size:12px;font-weight:500;color:var(--text-muted);box-shadow:var(--shadow-xs);z-index:100;display:flex;align-items:center;gap:6px;}
+
+
+        #last-update{position:fixed;top:16px;left:calc(var(--sidebar-w) + 20px);background:white;border:1px solid var(--border);padding:8px 16px;border-radius:20px;font-size:12px;font-weight:500;color:var(--text-muted);box-shadow:var(--shadow-xs);z-index:100;display:flex;align-items:center;gap:6px;}
         #last-update .dot{width:6px;height:6px;border-radius:50%;background:#22c55e;flex-shrink:0;}
         #last-update span{color:var(--primary);font-weight:600;}
-
         .toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(16px);background:var(--text);color:white;padding:10px 20px;border-radius:20px;font-weight:600;font-size:13px;box-shadow:var(--shadow-lg);opacity:0;transition:all 0.3s;z-index:2000;pointer-events:none;white-space:nowrap;}
         .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
@@ -140,7 +141,7 @@
             .sidebar-bottom{padding:10px;}
             .user-card{justify-content:center;}
             .main-inner{padding:20px 16px 60px;}
-            #last-update{left:80px;}
+
         }
 
         
@@ -178,12 +179,10 @@
         .sidebar.collapsed .nav-item { justify-content:center; padding:11px 8px; }
         .sidebar.collapsed .user-card { justify-content:center; }
         .sidebar.collapsed .sidebar-btn { justify-content:center; padding:10px 8px; }
-        .main-content,.main,.topbar { transition:margin-left 0.28s cubic-bezier(0.4,0,0.2,1),left 0.28s cubic-bezier(0.4,0,0.2,1); }
+        .main-content,.main { transition:margin-left 0.28s cubic-bezier(0.4,0,0.2,1); }
         body.sb-on .main-content { margin-left:64px !important; }
+        body.sb-on #last-update { left:80px; }
         body.sb-on .main { margin-left:64px !important; }
-        body.sb-on .topbar { left:64px !important; }
-        body.sb-on #last-update { left:80px !important; }
-
     </style>
 </head>
 <body>
@@ -266,7 +265,7 @@
         document.getElementById('userRole').textContent   = isAdmin ? 'Administrateur' : (currentUser.role === 'guest' ? 'Invité' : 'Utilisateur');
 
         const ds = typeof PED_LAST_UPDATE !== 'undefined' ? PED_LAST_UPDATE : '—';
-        document.getElementById('lastModified').textContent = ds;
+        const luEl = document.getElementById('lastModified'); if(luEl) luEl.textContent = ds;
 
         if (isAdmin) {
             document.getElementById('editBtn').style.display = 'flex';

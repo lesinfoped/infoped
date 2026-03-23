@@ -169,7 +169,8 @@
         .stripe-yellow { background:linear-gradient(90deg,#f5a623,#FFE66D); }
         .stripe-purple { background:linear-gradient(90deg,#764ba2,#a78bfa); }
         .stripe-blue   { background:linear-gradient(90deg,#667eea,#93c5fd); }
-        .stripe-green  { background:linear-gradient(90deg,#27ae60,#86efac); }
+        .stripe-blue2  { background:linear-gradient(90deg,#45464d,#93c5fd); }
+        .stripe-green  { background:linear-gradient(90deg,#30D5C8,#86efac); }
 
         .card-header {
             padding:16px 20px 12px;
@@ -420,7 +421,7 @@
 
                 <!-- L1C2 : Organisation & Pratique -->
                 <div class="section-card">
-                    <div class="card-stripe stripe-purple"></div>
+                    <div class="card-stripe stripe-blue"></div>
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ci-purple">📌</div>
@@ -459,7 +460,7 @@
 
                 <!-- L2C2 : Administratif & Divers -->
                 <div class="section-card">
-                    <div class="card-stripe stripe-blue"></div>
+                    <div class="card-stripe stripe-blue2"></div>
                     <div class="card-header">
                         <div class="card-header-left">
                             <div class="card-icon ci-blue">📁</div>
@@ -536,32 +537,40 @@
         if (isGuest) document.getElementById('guestBanner').style.display = 'block';
         if (isAdmin) document.getElementById('adminBtn').style.display = 'flex';
 
-        // Sections simples
+        // Helper : dernier item d'une section (ou vide)
+        function lastOf(key) {
+            const arr = PED_CONTENT[key]||[];
+            return arr.length ? [arr[0]] : []; // premier = plus récent (ajout en tête)
+        }
+
+        // Sections simples — 3 dernières infos
         ['projets','rh','divers','evenements'].forEach(s => {
             const items = (PED_CONTENT[s]||[]);
             document.getElementById('count-'+s).textContent = items.length + ' information' + (items.length > 1 ? 's' : '');
             renderCardList('list-'+s, items.slice(0,3));
         });
 
-        // Thérapeutique — combinaison des 3 sous-sections
-        const medItems = [
-            ...(PED_CONTENT.medicaments_med||[]),
-            ...(PED_CONTENT.medicaments_dm||[]),
-            ...(PED_CONTENT.medicaments_protocoles||[])
+        // Thérapeutique — 1 dernière info par sous-section (3 sous-sections → 3 items)
+        const medPreview = [
+            ...lastOf('medicaments_med'),
+            ...lastOf('medicaments_dm'),
+            ...lastOf('medicaments_protocoles')
         ];
-        document.getElementById('count-medicaments').textContent = medItems.length + ' information' + (medItems.length > 1 ? 's' : '');
-        renderCardList('list-medicaments', medItems.slice(0,3));
+        const medTotal = (PED_CONTENT.medicaments_med||[]).length + (PED_CONTENT.medicaments_dm||[]).length + (PED_CONTENT.medicaments_protocoles||[]).length;
+        document.getElementById('count-medicaments').textContent = medTotal + ' information' + (medTotal > 1 ? 's' : '');
+        renderCardList('list-medicaments', medPreview);
 
-        // Organisation & Pratique (combinaison des 3 sous-sections)
-        const hygItems = [
-            ...(PED_CONTENT.hygiene_htc||[]),
-            ...(PED_CONTENT.hygiene_urgence||[]),
-            ...(PED_CONTENT.hygiene_pedopsy||[])
+        // Organisation & Pratique — 1 dernière info par sous-section
+        const orgPreview = [
+            ...lastOf('hygiene_htc'),
+            ...lastOf('hygiene_urgence'),
+            ...lastOf('hygiene_pedopsy')
         ];
-        document.getElementById('count-orgpratique').textContent = hygItems.length + ' information' + (hygItems.length > 1 ? 's' : '');
-        renderCardList('list-orgpratique', hygItems.slice(0,3));
+        const orgTotal = (PED_CONTENT.hygiene_htc||[]).length + (PED_CONTENT.hygiene_urgence||[]).length + (PED_CONTENT.hygiene_pedopsy||[]).length;
+        document.getElementById('count-orgpratique').textContent = orgTotal + ' information' + (orgTotal > 1 ? 's' : '');
+        renderCardList('list-orgpratique', orgPreview);
 
-        // Hygiène — section indépendante
+        // Hygiène — section indépendante, 3 dernières
         const hygItems2 = (PED_CONTENT.hygiene||[]);
         document.getElementById('count-hygiene2').textContent = hygItems2.length + ' information' + (hygItems2.length > 1 ? 's' : '');
         renderCardList('list-hygiene2', hygItems2.slice(0,3));
