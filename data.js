@@ -316,6 +316,17 @@ const PED_CONTENT = {
 
     evenements: [
         {
+            texte:     "DOC",
+            lien:      "https://raw.githubusercontent.com/lesinfoped/infoped/main/files/1774301701375_livret_doudous_orga_service_HTC.jpg",
+            type:      "normal",
+            size:      "",
+            textColor: "",
+            hlColor:   "",
+            bold:      false,
+            italic:    false,
+            under:     false
+        },
+        {
             texte:     "OYE OYE LA PEDIA !! Soirée de service le jeudi 12/03",
             lien:      "",
             type:      "normal",
