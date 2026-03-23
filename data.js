@@ -317,7 +317,7 @@ const PED_CONTENT = {
     evenements: [
         {
             texte:     "DOC DOC DOC",
-            lien:      "https://raw.githubusercontent.com/lesinfoped/infoped/main/files/1774301701375_livret_doudous_orga_service_HTC.jpg",
+            lien:      "https://raw.githubusercontent.com/lesinfoped/infoped/main/files/1774302368793_Contrat_Ado_orga_pedopsy.jpg",
             type:      "alert",
             size:      "",
             textColor: "",
